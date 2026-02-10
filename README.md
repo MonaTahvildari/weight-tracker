@@ -59,7 +59,7 @@ git init
 git add .
 git commit -m "Initial commit: Weight tracker"
 git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/weight-tracker.git
+git remote add origin https://github.com/MonaTahvildari/weight-tracker.git
 git push -u origin main
 ```
 
