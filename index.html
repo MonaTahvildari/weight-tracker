@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weight loss tracker for Katy and Mona - Track calories, exercise, and weight progress">
+    <meta name="theme-color" content="#6366f1">
+    <title>Weight Tracker - Katy & Mona</title>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="app">
+
+        <!-- User Selection Screen -->
+        <section id="user-selection" class="screen user-selection">
+            <div class="container">
+                <h1 class="app-title">Weight Tracker</h1>
+                <p class="subtitle">Choose your profile</p>
+
+                <div class="user-cards">
+                    <div class="user-card" data-user="katy">
+                        <div class="user-avatar">K</div>
+                        <h2 class="user-name">Katy</h2>
+                        <div class="user-stats">
+                            <div class="stat">
+                                <span class="stat-label">Streak</span>
+                                <span class="stat-value" id="katy-streak">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Progress</span>
+                                <span class="stat-value" id="katy-progress">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="user-card" data-user="mona">
+                        <div class="user-avatar">M</div>
+                        <h2 class="user-name">Mona</h2>
+                        <div class="user-stats">
+                            <div class="stat">
+                                <span class="stat-label">Streak</span>
+                                <span class="stat-value" id="mona-streak">0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-label">Progress</span>
+                                <span class="stat-value" id="mona-progress">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="reset-data-btn" class="btn-text">Reset All Data</button>
+            </div>
+        </section>
+
+        <!-- Profile Setup Screen (First Time Only) -->
+        <section id="profile-setup" class="screen profile-setup hidden">
+            <div class="container">
+                <button class="btn-back" id="back-to-users">&larr; Back</button>
+
+                <h1>Set Up Profile</h1>
+                <p class="subtitle">This information helps us calculate accurate predictions</p>
+
+                <form id="profile-form" class="form">
+                    <div class="form-group">
+                        <label for="profile-height">Height (cm)</label>
+                        <input type="number" id="profile-height" min="100" max="250" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profile-age">Age (years)</label>
+                        <input type="number" id="profile-age" min="10" max="120" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profile-start-weight">Current Weight (kg)</label>
+                        <input type="number" id="profile-start-weight" step="0.1" min="30" max="300" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profile-goal-weight">Goal Weight (kg)</label>
+                        <input type="number" id="profile-goal-weight" step="0.1" min="30" max="300" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Entry Reminder Banner -->
+        <div id="reminder-banner" class="reminder-banner hidden">
+            <div class="reminder-content">
+                <span class="reminder-icon">⏰</span>
+                <span class="reminder-text">You haven't logged today! Time to add your entry.</span>
+            </div>
+            <div class="reminder-actions">
+                <button id="reminder-log-now" class="btn-small btn-primary">Log Now</button>
+                <button id="reminder-dismiss" class="btn-small btn-text">Dismiss</button>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <section id="dashboard" class="screen dashboard hidden">
+            <div class="container">
+                <!-- Header -->
+                <header class="dashboard-header">
+                    <button class="btn-back" id="back-to-selection">&larr; Switch User</button>
+                    <h1 id="dashboard-user-name">Katy</h1>
+                    <button id="export-data-btn" class="btn-icon" title="Export Data">📥</button>
+                </header>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-icon">⚖️</div>
+                        <div class="stat-card-content">
+                            <span class="stat-card-label">Current Weight</span>
+                            <span class="stat-card-value" id="stat-current-weight">-</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📉</div>
+                        <div class="stat-card-content">
+                            <span class="stat-card-label">This Week</span>
+                            <span class="stat-card-value" id="stat-week-change">-</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-icon">📅</div>
+                        <div class="stat-card-content">
+                            <span class="stat-card-label">Days Tracked</span>
+                            <span class="stat-card-value" id="stat-days-tracked">0</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-icon">🔥</div>
+                        <div class="stat-card-content">
+                            <span class="stat-card-label">Streak</span>
+                            <span class="stat-card-value" id="stat-streak">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2>Weight Progress</h2>
+                        <div class="chart-controls">
+                            <button id="toggle-comparison" class="btn-small btn-outline">Compare</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="weight-chart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Entries -->
+                <div class="recent-entries">
+                    <h2>Recent Entries</h2>
+                    <div id="entries-list" class="entries-list">
+                        <!-- Entries will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <!-- Floating Action Button -->
+                <button id="fab" class="fab" title="Add Entry">+</button>
+            </div>
+        </section>
+
+        <!-- Daily Entry Form -->
+        <section id="daily-entry-form" class="screen form-screen hidden">
+            <div class="container">
+                <button class="btn-back" id="back-from-daily">&larr; Back</button>
+
+                <h1>Daily Entry</h1>
+                <p class="subtitle" id="daily-entry-date"></p>
+
+                <form id="daily-form" class="form">
+                    <!-- Calories Section -->
+                    <div class="form-section">
+                        <h3>Calories</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="breakfast">Breakfast</label>
+                                <input type="number" id="breakfast" min="0" max="5000" value="0" required>
+                                <span class="input-suffix">kcal</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="lunch">Lunch</label>
+                                <input type="number" id="lunch" min="0" max="5000" value="0" required>
+                                <span class="input-suffix">kcal</span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dinner">Dinner</label>
+                                <input type="number" id="dinner" min="0" max="5000" value="0" required>
+                                <span class="input-suffix">kcal</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="snack">Snack</label>
+                                <input type="number" id="snack" min="0" max="5000" value="0" required>
+                                <span class="input-suffix">kcal</span>
+                            </div>
+                        </div>
+                        <div class="total-calories">
+                            Total: <span id="total-calories">0</span> kcal
+                        </div>
+                    </div>
+
+                    <!-- Workout Section -->
+                    <div class="form-section">
+                        <h3>Workout</h3>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="workout-completed">
+                                <span>I worked out today</span>
+                            </label>
+                        </div>
+                        <div id="workout-exercises" class="exercise-checkboxes hidden">
+                            <p class="helper-text">Select exercises (you can choose multiple):</p>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="bicep/tricep">
+                                <span>Bicep/Tricep</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="shoulder">
+                                <span>Shoulder</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="back">
+                                <span>Back</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="chest">
+                                <span>Chest</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="booty">
+                                <span>Booty</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="leg">
+                                <span>Leg</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="exercise" value="abs">
+                                <span>Abs</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Running Section -->
+                    <div class="form-section">
+                        <h3>Running</h3>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="running-completed">
+                                <span>I ran today</span>
+                            </label>
+                        </div>
+                        <div id="running-distance-group" class="form-group hidden">
+                            <label for="running-distance">Distance</label>
+                            <input type="number" id="running-distance" step="0.1" min="0" max="100">
+                            <span class="input-suffix">km</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Entry</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Weight Entry Form -->
+        <section id="weight-entry-form" class="screen form-screen hidden">
+            <div class="container">
+                <button class="btn-back" id="back-from-weight">&larr; Back</button>
+
+                <h1>Weekly Weigh-In</h1>
+                <p class="subtitle">Time to record your progress!</p>
+
+                <form id="weight-form" class="form">
+                    <div class="form-section">
+                        <div class="weight-comparison" id="weight-comparison">
+                            <!-- Previous weight info will be inserted here -->
+                        </div>
+
+                        <div class="form-group">
+                            <label for="current-weight">Current Weight</label>
+                            <input type="number" id="current-weight" step="0.1" min="30" max="300" required autofocus>
+                            <span class="input-suffix">kg</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="weight-notes">Notes (optional)</label>
+                            <textarea id="weight-notes" rows="3" placeholder="How are you feeling? Any observations?"></textarea>
+                        </div>
+
+                        <div id="motivation-message" class="motivation-message">
+                            <!-- Motivational message will be inserted here -->
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Weight</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="toast hidden">
+            <span id="toast-message"></span>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('✓ Service Worker registered:', registration.scope);
+
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('New version available!');
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

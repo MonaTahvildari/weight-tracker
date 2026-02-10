@@ -1,0 +1,330 @@
+/* ========================================
+   Responsive Design (Mobile-First)
+   ======================================== */
+
+/* Base styles are mobile-first (320px+) */
+
+/* ========================================
+   Small Tablets (640px+)
+   ======================================== */
+
+@media (min-width: 640px) {
+    .screen {
+        padding: var(--spacing-2xl) var(--spacing-xl);
+    }
+
+    .user-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .chart-container {
+        height: 450px;
+    }
+}
+
+/* ========================================
+   Tablets & Small Laptops (768px+)
+   ======================================== */
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .app-title {
+        font-size: 3rem;
+    }
+
+    .user-cards {
+        gap: var(--spacing-2xl);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .chart-section {
+        padding: var(--spacing-2xl);
+    }
+
+    .form {
+        padding: var(--spacing-xl);
+    }
+}
+
+/* ========================================
+   Laptops & Desktops (1024px+)
+   ======================================== */
+
+@media (min-width: 1024px) {
+    .screen {
+        padding: var(--spacing-2xl);
+    }
+
+    .chart-container {
+        height: 500px;
+    }
+
+    .user-cards {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Side-by-side comparison layout */
+    .comparison-view .chart-container {
+        height: 450px;
+    }
+
+    .comparison-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xl);
+    }
+}
+
+/* ========================================
+   Large Desktops (1280px+)
+   ======================================== */
+
+@media (min-width: 1280px) {
+    .container {
+        max-width: 1400px;
+    }
+
+    .chart-container {
+        height: 550px;
+    }
+}
+
+/* ========================================
+   Mobile-Specific Optimizations
+   ======================================== */
+
+@media (max-width: 639px) {
+    /* Stack everything vertically on mobile */
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-cards {
+        grid-template-columns: 1fr;
+    }
+
+    /* Make buttons full width on mobile */
+    .btn:not(.btn-small):not(.btn-icon):not(.btn-back):not(.fab) {
+        width: 100%;
+    }
+
+    /* Adjust form layout */
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    /* Smaller chart on mobile */
+    .chart-container {
+        height: 300px;
+    }
+
+    /* Entry items stack */
+    .entry-item {
+        grid-template-columns: 1fr;
+    }
+
+    .entry-actions {
+        justify-content: flex-end;
+    }
+
+    /* Dashboard header */
+    .dashboard-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+
+    .dashboard-header h1 {
+        text-align: left;
+        width: 100%;
+    }
+
+    /* Stat cards more compact */
+    .stat-card {
+        padding: var(--spacing-md);
+    }
+
+    .stat-card-icon {
+        font-size: 1.5rem;
+    }
+
+    .stat-card-value {
+        font-size: 1.25rem;
+    }
+
+    /* FAB positioning */
+    .fab {
+        bottom: var(--spacing-lg);
+        right: var(--spacing-lg);
+        width: 56px;
+        height: 56px;
+        font-size: 1.75rem;
+    }
+
+    /* Reminder banner */
+    .reminder-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: var(--spacing-md);
+    }
+
+    .reminder-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .reminder-actions .btn-small {
+        width: 100%;
+    }
+
+    /* Toast notifications */
+    .toast {
+        bottom: var(--spacing-lg);
+        left: var(--spacing-md);
+        right: var(--spacing-md);
+        transform: translateX(0) translateY(100px);
+        max-width: none;
+    }
+
+    .toast.show {
+        transform: translateX(0) translateY(0);
+    }
+}
+
+/* ========================================
+   Touch Device Optimizations
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Increase tap target sizes */
+    .btn,
+    .checkbox-label,
+    .user-card,
+    .entry-item {
+        min-height: 44px;
+    }
+
+    /* Remove hover effects on touch devices */
+    .user-card:hover {
+        transform: none;
+        box-shadow: var(--shadow);
+    }
+
+    .stat-card:hover {
+        transform: none;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Use active states instead */
+    .btn:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+
+    .user-card:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+    /* Hide interactive elements */
+    .fab,
+    .btn-back,
+    .reminder-banner,
+    .toast,
+    #loading {
+        display: none !important;
+    }
+
+    /* Adjust colors for print */
+    body {
+        background: white;
+        color: black;
+    }
+
+    .user-card,
+    .stat-card,
+    .chart-section,
+    .recent-entries,
+    .form-section {
+        border: 1px solid #ccc;
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+
+    /* Ensure chart is visible */
+    .chart-container {
+        height: auto;
+        min-height: 400px;
+    }
+}
+
+/* ========================================
+   Dark Mode Support (Optional - for future)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles can be added here in the future
+       Currently using light mode only */
+}
+
+/* ========================================
+   Reduced Motion
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .spinner {
+        animation: none;
+        border: 4px solid var(--primary);
+    }
+}
+
+/* ========================================
+   Landscape Orientation (Mobile)
+   ======================================== */
+
+@media (max-width: 896px) and (orientation: landscape) {
+    .screen {
+        padding: var(--spacing-md);
+    }
+
+    .chart-container {
+        height: 250px;
+    }
+
+    .user-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
