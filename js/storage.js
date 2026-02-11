@@ -89,6 +89,12 @@ const Storage = (function() {
         try {
             data.lastUpdated = Date.now();
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+            // Sync to Firebase
+            if (typeof FirebaseSync !== 'undefined') {
+                FirebaseSync.onDataChanged(data);
+            }
+
             return true;
         } catch (error) {
             console.error('Error saving data:', error);

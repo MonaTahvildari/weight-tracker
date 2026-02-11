@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'weight-tracker-v2.0.0';
+const CACHE_NAME = 'weight-tracker-v2.1.0';
 const ASSETS_TO_CACHE = [
     '/weight-tracker/',
     '/weight-tracker/index.html',
@@ -11,6 +11,7 @@ const ASSETS_TO_CACHE = [
     '/weight-tracker/css/components.css',
     '/weight-tracker/css/responsive.css',
     '/weight-tracker/js/storage.js',
+    '/weight-tracker/js/firebase-sync.js',
     '/weight-tracker/js/calculations.js',
     '/weight-tracker/js/charts.js',
     '/weight-tracker/js/ui.js',

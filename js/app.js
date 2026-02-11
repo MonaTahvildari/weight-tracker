@@ -25,6 +25,10 @@
             Notifications.init();
             console.log('✓ Notifications initialized');
 
+            // Initialize Firebase sync
+            FirebaseSync.init();
+            console.log('✓ Firebase sync initialized');
+
             // Hide loading overlay
             hideLoading();
 
