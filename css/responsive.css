@@ -13,10 +13,6 @@
         padding: var(--spacing-2xl) var(--spacing-xl);
     }
 
-    .user-cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -36,15 +32,7 @@
 
 @media (min-width: 768px) {
     h1 {
-        font-size: 2.5rem;
-    }
-
-    .app-title {
-        font-size: 3rem;
-    }
-
-    .user-cards {
-        gap: var(--spacing-2xl);
+        font-size: 2rem;
     }
 
     .stats-grid {
@@ -71,12 +59,6 @@
 
     .chart-container {
         height: 500px;
-    }
-
-    .user-cards {
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
     }
 
     /* Side-by-side comparison layout */
@@ -115,10 +97,6 @@
         grid-template-columns: 1fr;
     }
 
-    .user-cards {
-        grid-template-columns: 1fr;
-    }
-
     /* Make buttons full width on mobile */
     .btn:not(.btn-small):not(.btn-icon):not(.btn-back):not(.fab) {
         width: 100%;
@@ -145,13 +123,12 @@
 
     /* Dashboard header */
     .dashboard-header {
-        flex-direction: column;
-        gap: var(--spacing-md);
+        flex-direction: row;
+        gap: var(--spacing-sm);
     }
 
-    .dashboard-header h1 {
-        text-align: left;
-        width: 100%;
+    .app-logo {
+        font-size: 1rem;
     }
 
     /* Stat cards more compact */
@@ -165,6 +142,22 @@
 
     .stat-card-value {
         font-size: 1.25rem;
+    }
+
+    /* Tab bar compact */
+    .tab-bar {
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .tab {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.85rem;
+    }
+
+    .tab-avatar {
+        width: 24px;
+        height: 24px;
+        font-size: 0.65rem;
     }
 
     /* FAB positioning */
@@ -204,6 +197,11 @@
     .toast.show {
         transform: translateX(0) translateY(0);
     }
+
+    /* Modal compact */
+    .modal {
+        padding: var(--spacing-xl);
+    }
 }
 
 /* ========================================
@@ -214,17 +212,12 @@
     /* Increase tap target sizes */
     .btn,
     .checkbox-label,
-    .user-card,
+    .tab,
     .entry-item {
         min-height: 44px;
     }
 
     /* Remove hover effects on touch devices */
-    .user-card:hover {
-        transform: none;
-        box-shadow: var(--shadow);
-    }
-
     .stat-card:hover {
         transform: none;
         box-shadow: var(--shadow-sm);
@@ -236,7 +229,7 @@
         opacity: 0.9;
     }
 
-    .user-card:active {
+    .tab:active {
         transform: scale(0.98);
         opacity: 0.9;
     }
@@ -252,6 +245,7 @@
     .btn-back,
     .reminder-banner,
     .toast,
+    .tab-bar,
     #loading {
         display: none !important;
     }
@@ -262,7 +256,6 @@
         color: black;
     }
 
-    .user-card,
     .stat-card,
     .chart-section,
     .recent-entries,
@@ -277,15 +270,6 @@
         height: auto;
         min-height: 400px;
     }
-}
-
-/* ========================================
-   Dark Mode Support (Optional - for future)
-   ======================================== */
-
-@media (prefers-color-scheme: dark) {
-    /* Dark mode styles can be added here in the future
-       Currently using light mode only */
 }
 
 /* ========================================
@@ -318,10 +302,6 @@
 
     .chart-container {
         height: 250px;
-    }
-
-    .user-cards {
-        grid-template-columns: repeat(2, 1fr);
     }
 
     .stats-grid {

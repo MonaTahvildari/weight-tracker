@@ -4,8 +4,8 @@
   "description": "Track weight loss, calories, and exercise progress for Katy and Mona",
   "start_url": "/weight-tracker/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#6366f1",
+  "background_color": "#0f0f0f",
+  "theme_color": "#0f0f0f",
   "orientation": "portrait-primary",
   "scope": "/weight-tracker/",
   "icons": [

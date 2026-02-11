@@ -5,7 +5,7 @@
 
 const Charts = (function() {
     let weightChart = null;
-    let currentView = 'individual'; // 'individual' or 'comparison'
+    let currentView = 'comparison'; // 'individual' or 'comparison'
     let currentUserId = null;
 
     /**
@@ -14,7 +14,7 @@ const Charts = (function() {
      * @param {string} userId - User ID ('katy' or 'mona')
      * @param {boolean} comparison - Whether to show comparison view
      */
-    function renderWeightChart(userId, comparison = false) {
+    function renderWeightChart(userId, comparison = true) {
         currentUserId = userId;
         currentView = comparison ? 'comparison' : 'individual';
 
@@ -91,7 +91,7 @@ const Charts = (function() {
                         pointRadius: 6,
                         pointHoverRadius: 8,
                         pointBackgroundColor: userColor,
-                        pointBorderColor: '#fff',
+                        pointBorderColor: '#1a1a1a',
                         pointBorderWidth: 2,
                         tension: 0.3,
                         fill: true
@@ -106,7 +106,7 @@ const Charts = (function() {
                         pointRadius: 4,
                         pointHoverRadius: 6,
                         pointBackgroundColor: 'rgb(148, 163, 184)',
-                        pointBorderColor: '#fff',
+                        pointBorderColor: '#1a1a1a',
                         pointBorderWidth: 2,
                         tension: 0.3,
                         fill: false
@@ -166,7 +166,7 @@ const Charts = (function() {
                         pointRadius: 6,
                         pointHoverRadius: 8,
                         pointBackgroundColor: 'rgb(236, 72, 153)',
-                        pointBorderColor: '#fff',
+                        pointBorderColor: '#1a1a1a',
                         pointBorderWidth: 2,
                         tension: 0.3,
                         spanGaps: true
@@ -180,7 +180,7 @@ const Charts = (function() {
                         pointRadius: 6,
                         pointHoverRadius: 8,
                         pointBackgroundColor: 'rgb(139, 92, 246)',
-                        pointBorderColor: '#fff',
+                        pointBorderColor: '#1a1a1a',
                         pointBorderWidth: 2,
                         tension: 0.3,
                         spanGaps: true
@@ -202,8 +202,8 @@ const Charts = (function() {
                 datasets: [{
                     label: 'No data',
                     data: [],
-                    borderColor: 'rgb(226, 232, 240)',
-                    backgroundColor: 'rgba(226, 232, 240, 0.1)'
+                    borderColor: '#2a2a2a',
+                    backgroundColor: 'rgba(42, 42, 42, 0.1)'
                 }]
             },
             options: {
@@ -216,7 +216,7 @@ const Charts = (function() {
                         font: {
                             size: 16
                         },
-                        color: 'rgb(148, 163, 184)'
+                        color: '#666666'
                     }
                 }
             }
@@ -260,6 +260,7 @@ const Charts = (function() {
                     display: true,
                     position: 'top',
                     labels: {
+                        color: '#a0a0a0',
                         usePointStyle: true,
                         padding: 15,
                         font: {
@@ -270,7 +271,11 @@ const Charts = (function() {
                 },
                 tooltip: {
                     enabled: true,
-                    backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                    backgroundColor: 'rgba(26, 26, 26, 0.95)',
+                    titleColor: '#f0f0f0',
+                    bodyColor: '#a0a0a0',
+                    borderColor: '#2a2a2a',
+                    borderWidth: 1,
                     titleFont: {
                         size: 14,
                         weight: '600'
@@ -322,16 +327,18 @@ const Charts = (function() {
                     title: {
                         display: true,
                         text: 'Weight (kg)',
+                        color: '#a0a0a0',
                         font: {
                             size: 13,
                             weight: '600'
                         }
                     },
                     grid: {
-                        color: 'rgb(241, 245, 249)',
+                        color: '#2a2a2a',
                         drawBorder: false
                     },
                     ticks: {
+                        color: '#666666',
                         callback: function(value) {
                             return value.toFixed(1) + ' kg';
                         },
@@ -344,6 +351,7 @@ const Charts = (function() {
                     title: {
                         display: true,
                         text: 'Date',
+                        color: '#a0a0a0',
                         font: {
                             size: 13,
                             weight: '600'
@@ -354,6 +362,7 @@ const Charts = (function() {
                         drawBorder: false
                     },
                     ticks: {
+                        color: '#666666',
                         font: {
                             size: 11
                         },

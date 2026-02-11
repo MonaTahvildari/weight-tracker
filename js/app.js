@@ -90,7 +90,7 @@
     function handleBeforeUnload(e) {
         // Check if there's unsaved data
         const currentScreen = UI.getCurrentScreen();
-        const forms = ['daily-entry-form', 'weight-entry-form', 'profile-setup'];
+        const forms = ['daily-entry-form', 'weight-entry-form'];
 
         if (forms.includes(currentScreen)) {
             e.preventDefault();
@@ -107,11 +107,8 @@
             // User returned to the tab
             const userId = UI.getCurrentUser();
             if (userId) {
-                // Refresh reminders
                 Notifications.checkReminders(userId);
-
-                // Update user cards
-                UI.updateUserCards();
+                UI.updateTabStreaks();
             }
         }
     }
@@ -176,17 +173,29 @@
         document.addEventListener('keydown', (e) => {
             const currentScreen = UI.getCurrentScreen();
 
-            // ESC key - go back
+            // ESC key - close modal or go back
             if (e.key === 'Escape') {
-                if (currentScreen === 'dashboard') {
-                    // Go back to user selection
-                    const backBtn = document.getElementById('back-to-selection');
-                    if (backBtn) backBtn.click();
-                } else if (['daily-entry-form', 'weight-entry-form'].includes(currentScreen)) {
-                    // Go back to dashboard
+                const modal = document.getElementById('profile-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    modal.classList.add('hidden');
+                    return;
+                }
+                if (['daily-entry-form', 'weight-entry-form'].includes(currentScreen)) {
                     const backBtn = document.querySelector('.btn-back');
                     if (backBtn) backBtn.click();
                 }
+            }
+
+            // Ctrl/Cmd + 1 - Katy tab
+            if ((e.ctrlKey || e.metaKey) && e.key === '1') {
+                e.preventDefault();
+                UI.switchTab('katy');
+            }
+
+            // Ctrl/Cmd + 2 - Mona tab
+            if ((e.ctrlKey || e.metaKey) && e.key === '2') {
+                e.preventDefault();
+                UI.switchTab('mona');
             }
 
             // Ctrl/Cmd + E - Export data

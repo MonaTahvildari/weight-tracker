@@ -4,40 +4,30 @@
  */
 
 const UI = (function() {
-    let currentUser = null;
-    let currentScreen = 'user-selection';
+    let activeTab = 'katy';
+    let currentScreen = 'dashboard';
 
     /**
      * Initialize UI elements and event listeners
      */
     function init() {
         setupEventListeners();
-        updateUserCards();
+        updateTabStreaks();
+        switchTab('katy');
     }
 
     /**
      * Setup all event listeners
      */
     function setupEventListeners() {
-        // User selection
-        document.querySelectorAll('.user-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const userId = card.dataset.user;
-                selectUser(userId);
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.user);
             });
         });
 
-        // Back buttons
-        document.getElementById('back-to-selection')?.addEventListener('click', () => {
-            showScreen('user-selection');
-            currentUser = null;
-        });
-
-        document.getElementById('back-to-users')?.addEventListener('click', () => {
-            showScreen('user-selection');
-            currentUser = null;
-        });
-
+        // Back buttons (from forms back to dashboard)
         document.getElementById('back-from-daily')?.addEventListener('click', () => {
             showScreen('dashboard');
         });
@@ -49,13 +39,6 @@ const UI = (function() {
         // FAB button
         document.getElementById('fab')?.addEventListener('click', () => {
             showDailyEntryForm();
-        });
-
-        // Chart toggle
-        document.getElementById('toggle-comparison')?.addEventListener('click', () => {
-            const view = Charts.toggleComparisonView();
-            const btn = document.getElementById('toggle-comparison');
-            btn.textContent = view === 'comparison' ? 'Individual' : 'Compare';
         });
 
         // Forms
@@ -77,6 +60,12 @@ const UI = (function() {
                 Storage.clearAllData();
                 location.reload();
             }
+        });
+
+        // Profile modal
+        document.getElementById('close-profile-modal')?.addEventListener('click', hideProfileModal);
+        document.getElementById('profile-modal')?.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) hideProfileModal();
         });
 
         // Reminder banner
@@ -112,7 +101,6 @@ const UI = (function() {
                     exercisesDiv.classList.remove('hidden');
                 } else {
                     exercisesDiv.classList.add('hidden');
-                    // Uncheck all exercises
                     document.querySelectorAll('input[name="exercise"]').forEach(cb => {
                         cb.checked = false;
                     });
@@ -151,57 +139,59 @@ const UI = (function() {
     }
 
     /**
-     * Select a user and show appropriate screen
+     * Switch between user tabs
      */
-    function selectUser(userId) {
-        currentUser = userId;
-        const profile = Storage.getUserProfile(userId);
+    function switchTab(userId) {
+        activeTab = userId;
 
-        // Check if profile setup is complete
+        // Update tab active states
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.user === userId);
+        });
+
+        // Check if profile setup is needed
+        const profile = Storage.getUserProfile(userId);
         if (!profile.setupComplete || !profile.height || !profile.age || !profile.startWeight) {
-            showProfileSetup(userId);
-        } else {
-            showDashboard(userId);
+            showProfileModal(userId);
+            return;
         }
+
+        // Update dashboard content for this user
+        updateStatsCards(userId);
+        renderRecentEntries(userId);
+        Charts.renderWeightChart(userId, true);
+        Notifications.checkReminders(userId);
     }
 
     /**
-     * Show profile setup screen
+     * Show profile setup modal
      */
-    function showProfileSetup(userId) {
+    function showProfileModal(userId) {
         const profile = Storage.getUserProfile(userId);
+        document.getElementById('profile-modal-user-name').textContent = profile.name;
 
-        // Pre-fill existing values if any
+        // Pre-fill existing values
         if (profile.height) document.getElementById('profile-height').value = profile.height;
         if (profile.age) document.getElementById('profile-age').value = profile.age;
         if (profile.startWeight) document.getElementById('profile-start-weight').value = profile.startWeight;
         if (profile.goalWeight) document.getElementById('profile-goal-weight').value = profile.goalWeight;
 
-        showScreen('profile-setup');
+        document.getElementById('profile-modal').classList.remove('hidden');
     }
 
     /**
-     * Show dashboard
+     * Hide profile modal
+     */
+    function hideProfileModal() {
+        document.getElementById('profile-modal').classList.add('hidden');
+    }
+
+    /**
+     * Show dashboard (refresh data for active tab)
      */
     function showDashboard(userId) {
-        currentUser = userId;
-        const profile = Storage.getUserProfile(userId);
-
-        // Update header
-        document.getElementById('dashboard-user-name').textContent = profile.name;
-
-        // Check for reminders
-        Notifications.checkReminders(userId);
-
-        // Update stats
-        updateStatsCards(userId);
-
-        // Render chart
-        Charts.renderWeightChart(userId, false);
-
-        // Update recent entries
-        renderRecentEntries(userId);
-
+        activeTab = userId || activeTab;
+        switchTab(activeTab);
         showScreen('dashboard');
     }
 
@@ -236,8 +226,8 @@ const UI = (function() {
         if (entries.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
-                    <div class="empty-state-icon">📝</div>
-                    <p>No entries yet. Click the + button to add your first entry!</p>
+                    <div class="empty-state-icon">+</div>
+                    <p>No entries yet. Tap + to add your first entry!</p>
                 </div>
             `;
             return;
@@ -252,13 +242,13 @@ const UI = (function() {
                 <div class="entry-item">
                     <span class="entry-date">${formatDate(entry.date)}</span>
                     <div class="entry-details">
-                        <span class="entry-badge">🍽️ ${entry.calories.total} kcal</span>
-                        <span class="entry-badge">💪 ${exercises}</span>
-                        <span class="entry-badge">🏃 ${running}</span>
+                        <span class="entry-badge">${entry.calories.total} kcal</span>
+                        <span class="entry-badge">${exercises}</span>
+                        <span class="entry-badge">${running}</span>
                     </div>
                     <div class="entry-actions">
-                        <button class="btn-icon" onclick="UI.editEntry('${entry.id}')" title="Edit">✏️</button>
-                        <button class="btn-icon" onclick="UI.deleteEntry('${entry.id}')" title="Delete">🗑️</button>
+                        <button class="btn-icon" onclick="UI.editEntry('${entry.id}')" title="Edit">&#9998;</button>
+                        <button class="btn-icon" onclick="UI.deleteEntry('${entry.id}')" title="Delete">&#10005;</button>
                     </div>
                 </div>
             `;
@@ -273,7 +263,7 @@ const UI = (function() {
         document.getElementById('daily-entry-date').textContent = formatDate(today);
 
         // Check if entry exists for today
-        const existingEntry = Storage.getDailyEntryByDate(currentUser, today);
+        const existingEntry = Storage.getDailyEntryByDate(activeTab, today);
 
         if (existingEntry) {
             // Pre-fill form with existing data
@@ -311,7 +301,7 @@ const UI = (function() {
      * Show weight entry form
      */
     function showWeightEntryForm() {
-        const lastWeight = Storage.getLatestWeight(currentUser);
+        const lastWeight = Storage.getLatestWeight(activeTab);
 
         if (lastWeight) {
             document.getElementById('weight-comparison').innerHTML = `
@@ -348,17 +338,18 @@ const UI = (function() {
             setupComplete: true
         };
 
-        if (Storage.updateUserProfile(currentUser, updates)) {
+        if (Storage.updateUserProfile(activeTab, updates)) {
             // Also save initial weight entry
             const today = new Date().toISOString().split('T')[0];
-            Storage.saveWeightEntry(currentUser, {
+            Storage.saveWeightEntry(activeTab, {
                 date: today,
                 actualWeight: startWeight,
                 predictedWeight: startWeight
             });
 
-            showToast('Profile saved successfully!');
-            showDashboard(currentUser);
+            hideProfileModal();
+            showToast('Profile saved!');
+            switchTab(activeTab);
         } else {
             showToast('Error saving profile', 'error');
         }
@@ -374,7 +365,7 @@ const UI = (function() {
 
         const entry = {
             date: today,
-            userId: currentUser,
+            userId: activeTab,
             calories: {
                 breakfast: parseInt(document.getElementById('breakfast').value) || 0,
                 lunch: parseInt(document.getElementById('lunch').value) || 0,
@@ -403,14 +394,14 @@ const UI = (function() {
             entry.running.distance = parseFloat(document.getElementById('running-distance').value) || 0;
         }
 
-        if (Storage.saveDailyEntry(currentUser, entry)) {
-            showToast('Entry saved successfully!');
+        if (Storage.saveDailyEntry(activeTab, entry)) {
+            showToast('Entry saved!');
 
             // Check if weight entry is due
-            if (Storage.isWeightEntryDue(currentUser)) {
+            if (Storage.isWeightEntryDue(activeTab)) {
                 showWeightEntryForm();
             } else {
-                showDashboard(currentUser);
+                showDashboard(activeTab);
             }
         } else {
             showToast('Error saving entry', 'error');
@@ -428,21 +419,21 @@ const UI = (function() {
         const today = new Date().toISOString().split('T')[0];
 
         // Calculate prediction
-        const dailyEntries = Storage.getDailyEntries(currentUser);
-        const profile = Storage.getUserProfile(currentUser);
+        const dailyEntries = Storage.getDailyEntries(activeTab);
+        const profile = Storage.getUserProfile(activeTab);
         const prediction = Calculations.predictWeight(profile, dailyEntries, weight);
 
         const entry = {
             date: today,
-            userId: currentUser,
+            userId: activeTab,
             actualWeight: weight,
             predictedWeight: prediction.predictedWeight,
             notes: notes
         };
 
-        if (Storage.saveWeightEntry(currentUser, entry)) {
-            showToast('Weight saved successfully!');
-            showDashboard(currentUser);
+        if (Storage.saveWeightEntry(activeTab, entry)) {
+            showToast('Weight saved!');
+            showDashboard(activeTab);
         } else {
             showToast('Error saving weight', 'error');
         }
@@ -506,19 +497,14 @@ const UI = (function() {
     }
 
     /**
-     * Update user cards with stats
+     * Update tab streak badges
      */
-    function updateUserCards() {
+    function updateTabStreaks() {
         ['katy', 'mona'].forEach(userId => {
             const stats = Storage.getUserStats(userId);
-            document.getElementById(`${userId}-streak`).textContent = stats.streak;
-
-            if (stats.totalChange !== null) {
-                const change = stats.totalChange.toFixed(1);
-                const sign = stats.totalChange > 0 ? '+' : '';
-                document.getElementById(`${userId}-progress`).textContent = `${sign}${change} kg`;
-            } else {
-                document.getElementById(`${userId}-progress`).textContent = '-';
+            const streakEl = document.getElementById(`tab-${userId}-streak`);
+            if (streakEl) {
+                streakEl.textContent = stats.streak > 0 ? `${stats.streak}d` : '';
             }
         });
     }
@@ -536,8 +522,6 @@ const UI = (function() {
      * Edit entry
      */
     function editEntry(entryId) {
-        // For now, just show the daily entry form
-        // Could be enhanced to load specific entry data
         showDailyEntryForm();
     }
 
@@ -546,9 +530,9 @@ const UI = (function() {
      */
     function deleteEntry(entryId) {
         if (confirm('Are you sure you want to delete this entry?')) {
-            if (Storage.deleteDailyEntry(currentUser, entryId)) {
-                showToast('Entry deleted successfully!');
-                showDashboard(currentUser);
+            if (Storage.deleteDailyEntry(activeTab, entryId)) {
+                showToast('Entry deleted!');
+                showDashboard(activeTab);
             } else {
                 showToast('Error deleting entry', 'error');
             }
@@ -558,17 +542,17 @@ const UI = (function() {
     // Public API
     return {
         init,
-        selectUser,
+        switchTab,
         showDashboard,
         showDailyEntryForm,
         showWeightEntryForm,
         showToast,
         showReminderBanner,
         hideReminderBanner,
-        updateUserCards,
+        updateTabStreaks,
         editEntry,
         deleteEntry,
-        getCurrentUser: () => currentUser,
+        getCurrentUser: () => activeTab,
         getCurrentScreen: () => currentScreen
     };
 })();
