@@ -3,20 +3,20 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'weight-tracker-v1.0.0';
+const CACHE_NAME = 'weight-tracker-v1.0.1';
 const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/css/main.css',
-    '/css/components.css',
-    '/css/responsive.css',
-    '/js/storage.js',
-    '/js/calculations.js',
-    '/js/charts.js',
-    '/js/ui.js',
-    '/js/notifications.js',
-    '/js/app.js',
-    '/manifest.json',
+    '/weight-tracker/',
+    '/weight-tracker/index.html',
+    '/weight-tracker/css/main.css',
+    '/weight-tracker/css/components.css',
+    '/weight-tracker/css/responsive.css',
+    '/weight-tracker/js/storage.js',
+    '/weight-tracker/js/calculations.js',
+    '/weight-tracker/js/charts.js',
+    '/weight-tracker/js/ui.js',
+    '/weight-tracker/js/notifications.js',
+    '/weight-tracker/js/app.js',
+    '/weight-tracker/manifest.json',
     'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js'
 ];
 
@@ -111,7 +111,7 @@ self.addEventListener('fetch', (event) => {
 
                         // Return cached index.html for navigation requests
                         if (event.request.mode === 'navigate') {
-                            return caches.match('/index.html');
+                            return caches.match('/weight-tracker/index.html');
                         }
                     });
             })
@@ -153,8 +153,8 @@ self.addEventListener('push', (event) => {
 
         const options = {
             body: data.body || 'Time to log your daily entry!',
-            icon: '/assets/icons/icon-192x192.png',
-            badge: '/assets/icons/icon-96x96.png',
+            icon: '/weight-tracker/assets/icons/icon-192x192.png',
+            badge: '/weight-tracker/assets/icons/icon-96x96.png',
             vibrate: [200, 100, 200],
             tag: 'weight-tracker-notification',
             requireInteraction: false
@@ -177,14 +177,14 @@ self.addEventListener('notificationclick', (event) => {
             .then((clientList) => {
                 // Focus existing window if available
                 for (const client of clientList) {
-                    if (client.url === '/' && 'focus' in client) {
+                    if (client.url.includes('/weight-tracker/') && 'focus' in client) {
                         return client.focus();
                     }
                 }
 
                 // Open new window if no existing window
                 if (clients.openWindow) {
-                    return clients.openWindow('/');
+                    return clients.openWindow('/weight-tracker/');
                 }
             })
     );

@@ -2,12 +2,12 @@
   "name": "Weight Tracker - Katy & Mona",
   "short_name": "Weight Tracker",
   "description": "Track weight loss, calories, and exercise progress for Katy and Mona",
-  "start_url": "/",
+  "start_url": "/weight-tracker/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
   "orientation": "portrait-primary",
-  "scope": "/",
+  "scope": "/weight-tracker/",
   "icons": [
     {
       "src": "assets/icons/icon-72x72.png",
@@ -63,7 +63,7 @@
       "name": "Add Daily Entry",
       "short_name": "Add Entry",
       "description": "Quickly add a daily entry",
-      "url": "/?action=add-entry",
+      "url": "/weight-tracker/?action=add-entry",
       "icons": [
         {
           "src": "assets/icons/icon-96x96.png",
