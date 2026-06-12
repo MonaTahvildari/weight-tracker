@@ -28,7 +28,17 @@ const UI = (function() {
             showScreen('dashboard');
         });
 
+        document.getElementById('back-from-summary')?.addEventListener('click', () => {
+            showScreen('dashboard');
+            renderLeaderboard();
+        });
+
         // Header buttons
+        document.getElementById('today-btn')?.addEventListener('click', () => {
+            showScreen('daily-summary');
+            renderDailySummary();
+        });
+
         document.getElementById('rules-btn')?.addEventListener('click', () => {
             showScreen('rules-screen');
         });
@@ -199,6 +209,74 @@ const UI = (function() {
                         <span class="stat">${Object.keys(player.dailyLogs || {}).length} logged</span>
                         <span class="stat">${Object.values(player.dailyLogs || {}).reduce((sum, log) => sum + (log.completedCount || 0), 0) || 0}/${Object.keys(player.dailyLogs || {}).length * 10 || 0} tasks</span>
                     </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderDailySummary() {
+        const today = Storage.getToday();
+        const players = Storage.getAllPlayers();
+
+        // Format date
+        const dateObj = new Date(today);
+        const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        document.getElementById('summary-date').textContent = dateStr;
+
+        const container = document.getElementById('daily-summary-list');
+
+        if (players.length === 0) {
+            container.innerHTML = '<p class="empty-state">No players yet</p>';
+            return;
+        }
+
+        const taskNames = ['diet', 'alcohol', 'workout1', 'workout1-outdoor', 'workout2', 'photo', 'water', 'reading', 'journaling', 'social-media'];
+        const taskLabels = {
+            'diet': 'Follow Diet',
+            'alcohol': 'No Alcohol',
+            'workout1': 'Workout 1',
+            'workout1-outdoor': 'Outdoor Activity',
+            'workout2': 'Workout 2',
+            'photo': 'Progress Photo',
+            'water': 'Drink Water',
+            'reading': 'Read 10 Pages',
+            'journaling': 'Journal',
+            'social-media': 'Social Media <1h'
+        };
+
+        container.innerHTML = players.map(player => {
+            const todayLog = Storage.getDailyLog(player.id, today);
+            const tasks = todayLog ? todayLog.tasks : {};
+            const completed = todayLog ? todayLog.completedCount : 0;
+
+            const taskChecks = taskNames.map(taskKey => {
+                const isCompleted = tasks[taskKey] || false;
+                return `<span class="task-check ${isCompleted ? 'done' : 'pending'}" title="${taskLabels[taskKey]}">
+                    ${isCompleted ? '✓' : '○'}
+                </span>`;
+            }).join('');
+
+            return `
+                <div class="daily-summary-card ${player.eliminated ? 'eliminated' : ''}">
+                    <div class="summary-header">
+                        <div class="summary-player">
+                            <div class="player-avatar">${player.name[0]}</div>
+                            <div>
+                                <h3>${player.name}</h3>
+                                <p class="summary-meta">Day ${player.currentDay || 1} • ${player.diet}</p>
+                            </div>
+                        </div>
+                        <div class="summary-score">
+                            <span class="score-number">${completed}/10</span>
+                            <span class="score-label">tasks</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-tasks">
+                        ${taskChecks}
+                    </div>
+
+                    ${player.eliminated ? '<div class="summary-eliminated">⚠️ ELIMINATED</div>' : completed >= 8 ? '<div class="summary-safe">✓ ON TRACK</div>' : '<div class="summary-warning">⚠️ NEEDS ' + (8 - completed) + ' MORE</div>'}
                 </div>
             `;
         }).join('');
