@@ -139,11 +139,9 @@ const Storage = (function() {
             timestamp: timestamp || new Date().toISOString()
         };
 
-        // Check if player should be eliminated
-        if (completedCount < 8) {
-            eliminatePlayer(playerId, day);
-        } else {
-            // Advance to next day if not eliminated
+        // Only advance to next day if they completed enough tasks
+        // Elimination happens at 12 PM check, not here
+        if (completedCount >= 8) {
             player.currentDay = Math.min(day + 1, 75);
         }
 
