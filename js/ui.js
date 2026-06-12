@@ -153,6 +153,8 @@ const UI = (function() {
             Storage.removePlayer(playerId);
             showToast(`${player.name} removed!`);
             renderAdminPlayersList();
+            // Refresh leaderboard in case user goes back to dashboard
+            renderLeaderboard();
         }
     }
 
