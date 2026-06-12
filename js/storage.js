@@ -142,7 +142,7 @@ const Storage = (function() {
         // Only advance to next day if they completed enough tasks
         // Elimination happens at 12 PM check, not here
         if (completedCount >= 8) {
-            player.currentDay = Math.min(day + 1, 75);
+            player.currentDay = Math.min(player.currentDay + 1, 75);
         }
 
         saveData(data);
