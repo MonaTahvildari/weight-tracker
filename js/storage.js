@@ -90,7 +90,16 @@ const Storage = (function() {
      */
     function getPlayer(playerId) {
         const data = getData();
-        return data.players[playerId] || null;
+        const player = data.players[playerId];
+
+        if (!player) return null;
+
+        // Ensure currentDay exists
+        if (!player.currentDay) {
+            player.currentDay = 1;
+        }
+
+        return player;
     }
 
     /**

@@ -182,7 +182,7 @@ const UI = (function() {
 
                     <div class="progress-section">
                         <div class="progress-info">
-                            <span class="progress-label">Day ${player.currentDay}</span>
+                            <span class="progress-label">Day ${player.currentDay || 1}</span>
                             <span class="progress-percent">${progress.toFixed(0)}%</span>
                         </div>
                         <div class="progress-bar">
@@ -211,7 +211,7 @@ const UI = (function() {
         document.getElementById('detail-avatar').textContent = player.name[0];
         document.getElementById('detail-player-name').textContent = player.name;
         document.getElementById('detail-player-diet').textContent = player.diet;
-        document.getElementById('detail-status').textContent = `Day ${player.currentDay}`;
+        document.getElementById('detail-status').textContent = `Day ${player.currentDay || 1}`;
 
         if (player.eliminated) {
             document.getElementById('detail-eliminated-badge').classList.remove('hidden');
