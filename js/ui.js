@@ -176,10 +176,13 @@ const UI = (function() {
         });
 
         container.innerHTML = sorted.map(player => {
+            // Calculate total tasks completed across all days
+            const allLogs = player.dailyLogs || {};
+            const totalTasksCompleted = Object.values(allLogs).reduce((sum, log) => sum + (log.completedCount || 0), 0);
+            const totalTasksPossible = 750; // 75 days × 10 tasks
+            const progress = (totalTasksCompleted / totalTasksPossible) * 100;
+
             const today = Storage.getToday();
-            const todayLog = Storage.getDailyLog(player.id, today);
-            const tasksCompleted = todayLog ? todayLog.completedCount : 0;
-            const progress = (tasksCompleted / 10) * 100;
             const isToday = !Storage.hasLoggedToday(player.id);
 
             return `
