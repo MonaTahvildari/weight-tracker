@@ -166,7 +166,10 @@ const UI = (function() {
         });
 
         container.innerHTML = sorted.map(player => {
-            const progress = (player.currentDay / 75) * 100;
+            const today = Storage.getToday();
+            const todayLog = Storage.getDailyLog(player.id, today);
+            const tasksCompleted = todayLog ? todayLog.completedCount : 0;
+            const progress = (tasksCompleted / 10) * 100;
             const isToday = !Storage.hasLoggedToday(player.id);
 
             return `
