@@ -233,6 +233,18 @@ const UI = (function() {
             return;
         }
 
+        // Color palette for unique player colors
+        const colors = [
+            '#6366f1', // indigo
+            '#ec4899', // pink
+            '#f59e0b', // amber
+            '#10b981', // emerald
+            '#06b6d4', // cyan
+            '#8b5cf6', // violet
+            '#ef4444', // red
+            '#14b8a6', // teal
+        ];
+
         const taskNames = ['diet', 'alcohol', 'workout1', 'workout1-outdoor', 'workout2', 'photo', 'water', 'reading', 'journaling', 'social-media'];
         const taskLabels = {
             'diet': 'Follow Diet',
@@ -247,23 +259,25 @@ const UI = (function() {
             'social-media': 'Social Media <1h'
         };
 
-        container.innerHTML = players.map(player => {
+        container.innerHTML = players.map((player, index) => {
+            const playerColor = colors[index % colors.length];
             const todayLog = Storage.getDailyLog(player.id, today);
             const tasks = todayLog ? todayLog.tasks : {};
             const completed = todayLog ? todayLog.completedCount : 0;
+            const progressPercent = (completed / 10) * 100;
 
             const taskChecks = taskNames.map(taskKey => {
                 const isCompleted = tasks[taskKey] || false;
-                return `<span class="task-check ${isCompleted ? 'done' : 'pending'}" title="${taskLabels[taskKey]}">
+                return `<span class="task-check ${isCompleted ? 'done' : 'pending'}" title="${taskLabels[taskKey]}" style="--task-color: ${playerColor}">
                     ${isCompleted ? '✓' : '○'}
                 </span>`;
             }).join('');
 
             return `
-                <div class="daily-summary-card ${player.eliminated ? 'eliminated' : ''}">
+                <div class="daily-summary-card ${player.eliminated ? 'eliminated' : ''}" style="--player-color: ${playerColor}">
                     <div class="summary-header">
                         <div class="summary-player">
-                            <div class="player-avatar">${player.name[0]}</div>
+                            <div class="player-avatar" style="background: linear-gradient(135deg, ${playerColor}, ${playerColor}dd)">${player.name[0]}</div>
                             <div>
                                 <h3>${player.name}</h3>
                                 <p class="summary-meta">Day ${player.currentDay || 1} • ${player.diet}</p>
@@ -277,6 +291,10 @@ const UI = (function() {
 
                     <div class="summary-tasks">
                         ${taskChecks}
+                    </div>
+
+                    <div class="daily-progress-bar">
+                        <div class="daily-progress-fill" style="width: ${progressPercent}%; background: ${playerColor}"></div>
                     </div>
 
                     ${player.eliminated ? '<div class="summary-eliminated">⚠️ ELIMINATED</div>' : completed >= 8 ? '<div class="summary-safe">✓ ON TRACK</div>' : '<div class="summary-warning">⚠️ NEEDS ' + (8 - completed) + ' MORE</div>'}
