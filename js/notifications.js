@@ -1,80 +1,73 @@
 /**
- * Notifications Module
- * Handles entry reminders and notifications
+ * Notifications Module for 75 Hard Challenge
+ * Handles task completion alerts and 12 PM elimination checks
  */
 
 const Notifications = (function() {
+    let last12PMCheck = null;
 
     /**
-     * Check if reminders should be shown for user
-     *
-     * @param {string} userId - User ID
+     * Initialize notifications
      */
-    function checkReminders(userId) {
-        if (!userId) return;
+    function init() {
+        // Check every minute for 12 PM elimination check
+        setInterval(checkDaily12PMElimination, 60000); // Every minute
 
+        // Also check on app load
+        checkDaily12PMElimination();
+    }
+
+    /**
+     * Check at 12 PM for players who haven't logged
+     */
+    function checkDaily12PMElimination() {
         const now = new Date();
-        const currentTime = now.getHours() * 60 + now.getMinutes(); // Minutes since midnight
-        const reminderTime = getReminderTimeInMinutes();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
 
-        // Only show reminders if it's past the reminder time
-        if (currentTime < reminderTime) {
-            return;
-        }
+        // Check if it's 12:00 PM (noon)
+        if (hours !== 12 || minutes > 1) return; // Allow 1 minute window
 
-        // Check if daily entry exists for today
-        const hasEntry = Storage.hasTodayEntry(userId);
-        if (!hasEntry) {
-            UI.showReminderBanner();
-            return;
-        }
+        // Don't check twice on the same day
+        const today = Storage.getToday();
+        if (last12PMCheck === today) return;
+        last12PMCheck = today;
 
-        // Check if weight entry is due
-        const isWeightDue = Storage.isWeightEntryDue(userId);
-        if (isWeightDue) {
-            showWeightReminderBanner();
-            return;
-        }
+        const players = Storage.getAllPlayers();
+
+        players.forEach(player => {
+            if (player.eliminated) return; // Skip already eliminated
+
+            const hasLogged = Storage.hasLoggedToday(player.id);
+
+            if (!hasLogged) {
+                // Haven't logged - check if they should be eliminated
+                const log = Storage.getDailyLog(player.id, today);
+
+                if (!log) {
+                    // No tasks logged, eliminate them
+                    Storage.eliminatePlayer(player.id, player.currentDay);
+                    UI.showToast(`⚠️ ${player.name} has been ELIMINATED for not logging by 12 PM!`, 'error');
+                }
+            }
+        });
     }
 
     /**
-     * Get reminder time in minutes since midnight
+     * Show task completion notification
      */
-    function getReminderTimeInMinutes() {
-        const settings = Storage.getSettings();
-        const reminderTime = settings.reminderTime || '21:00'; // Default 9 PM
+    function showTaskCompletion(playerName, completedCount, totalCount) {
+        const emoji = completedCount >= 8 ? '🔥' : '⚠️';
+        const status = completedCount >= 8 ? 'crushed it' : 'needs to do better';
 
-        const [hours, minutes] = reminderTime.split(':').map(Number);
-        return hours * 60 + minutes;
+        UI.showToast(`${emoji} ${playerName} ${status}! ${completedCount}/${totalCount} tasks.`);
     }
 
     /**
-     * Show weight reminder banner
-     */
-    function showWeightReminderBanner() {
-        const banner = document.getElementById('reminder-banner');
-        if (!banner) return;
-
-        const content = banner.querySelector('.reminder-text');
-        const logNowBtn = document.getElementById('reminder-log-now');
-
-        content.textContent = "Time for your weekly weigh-in! Let's track your progress.";
-
-        // Update button to show weight form
-        logNowBtn.onclick = () => {
-            UI.hideReminderBanner();
-            UI.showWeightEntryForm();
-        };
-
-        banner.classList.remove('hidden');
-    }
-
-    /**
-     * Request notification permission (for PWA)
+     * Request browser notification permission
      */
     async function requestNotificationPermission() {
         if (!('Notification' in window)) {
-            console.log('Notifications not supported');
             return false;
         }
 
@@ -92,9 +85,6 @@ const Notifications = (function() {
 
     /**
      * Send browser notification
-     *
-     * @param {string} title - Notification title
-     * @param {string} body - Notification body
      */
     function sendNotification(title, body) {
         if (Notification.permission !== 'granted') {
@@ -103,9 +93,9 @@ const Notifications = (function() {
 
         const notification = new Notification(title, {
             body: body,
-            icon: '/assets/icons/icon-192x192.png',
-            badge: '/assets/icons/icon-96x96.png',
-            tag: 'weight-tracker-reminder',
+            icon: '/weight-tracker/assets/icons/icon-192x192.png',
+            badge: '/weight-tracker/assets/icons/icon-96x96.png',
+            tag: '75hard-notification',
             renotify: true
         });
 
@@ -115,58 +105,11 @@ const Notifications = (function() {
         };
     }
 
-    /**
-     * Schedule daily reminder
-     * This would typically be done with a service worker in a full PWA
-     */
-    function scheduleDailyReminder() {
-        const now = new Date();
-        const reminderTime = getReminderTimeInMinutes();
-        const currentTime = now.getHours() * 60 + now.getMinutes();
-
-        let timeUntilReminder;
-        if (currentTime < reminderTime) {
-            // Reminder is later today
-            timeUntilReminder = (reminderTime - currentTime) * 60 * 1000;
-        } else {
-            // Reminder is tomorrow
-            const minutesUntilMidnight = (24 * 60) - currentTime;
-            timeUntilReminder = (minutesUntilMidnight + reminderTime) * 60 * 1000;
-        }
-
-        setTimeout(() => {
-            const userId = UI.getCurrentUser();
-            if (userId && !Storage.hasTodayEntry(userId)) {
-                sendNotification(
-                    'Weight Tracker Reminder',
-                    "Don't forget to log your daily calories and exercise!"
-                );
-            }
-
-            // Schedule next day's reminder
-            scheduleDailyReminder();
-        }, timeUntilReminder);
-    }
-
-    /**
-     * Initialize notifications
-     */
-    function init() {
-        // Request permission if in PWA context
-        if (window.matchMedia('(display-mode: standalone)').matches) {
-            requestNotificationPermission().then(granted => {
-                if (granted) {
-                    scheduleDailyReminder();
-                }
-            });
-        }
-    }
-
     // Public API
     return {
         init,
-        checkReminders,
-        requestNotificationPermission,
-        sendNotification
+        showTaskCompletion,
+        sendNotification,
+        requestNotificationPermission
     };
 })();

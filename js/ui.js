@@ -1,447 +1,317 @@
 /**
- * UI Module
+ * UI Module for 75 Hard Challenge
  * Handles all UI rendering and user interactions
  */
 
 const UI = (function() {
-    let activeTab = 'katy';
     let currentScreen = 'dashboard';
+    let selectedPlayerId = null;
 
-    /**
-     * Initialize UI elements and event listeners
-     */
     function init() {
         setupEventListeners();
-        updateTabStreaks();
-        switchTab('katy');
-    }
-
-    /**
-     * Setup all event listeners
-     */
-    function setupEventListeners() {
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchTab(tab.dataset.user);
-            });
-        });
-
-        // Back buttons (from forms back to dashboard)
-        document.getElementById('back-from-daily')?.addEventListener('click', () => {
-            showScreen('dashboard');
-        });
-
-        document.getElementById('back-from-weight')?.addEventListener('click', () => {
-            showScreen('dashboard');
-        });
-
-        // FAB button
-        document.getElementById('fab')?.addEventListener('click', () => {
-            showDailyEntryForm();
-        });
-
-        // Forms
-        document.getElementById('profile-form')?.addEventListener('submit', handleProfileSubmit);
-        document.getElementById('daily-form')?.addEventListener('submit', handleDailySubmit);
-        document.getElementById('weight-form')?.addEventListener('submit', handleWeightSubmit);
-
-        // Form interactions
-        setupFormInteractions();
-
-        // Data management
-        document.getElementById('export-data-btn')?.addEventListener('click', () => {
-            Storage.exportData();
-            showToast('Data exported successfully!');
-        });
-
-        document.getElementById('reset-data-btn')?.addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset ALL data? This cannot be undone!')) {
-                Storage.clearAllData();
-                location.reload();
-            }
-        });
-
-        // Profile modal
-        document.getElementById('close-profile-modal')?.addEventListener('click', hideProfileModal);
-        document.getElementById('profile-modal')?.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) hideProfileModal();
-        });
-
-        // Reminder banner
-        document.getElementById('reminder-log-now')?.addEventListener('click', () => {
-            hideReminderBanner();
-            showDailyEntryForm();
-        });
-
-        document.getElementById('reminder-dismiss')?.addEventListener('click', () => {
-            hideReminderBanner();
-        });
-    }
-
-    /**
-     * Setup form interactions
-     */
-    function setupFormInteractions() {
-        // Calculate total calories
-        const calorieInputs = ['breakfast', 'lunch', 'dinner', 'snack'];
-        calorieInputs.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                input.addEventListener('input', updateTotalCalories);
-            }
-        });
-
-        // Workout toggle
-        const workoutCheckbox = document.getElementById('workout-completed');
-        if (workoutCheckbox) {
-            workoutCheckbox.addEventListener('change', (e) => {
-                const exercisesDiv = document.getElementById('workout-exercises');
-                if (e.target.checked) {
-                    exercisesDiv.classList.remove('hidden');
-                } else {
-                    exercisesDiv.classList.add('hidden');
-                    document.querySelectorAll('input[name="exercise"]').forEach(cb => {
-                        cb.checked = false;
-                    });
-                }
-            });
-        }
-
-        // Running toggle
-        const runningCheckbox = document.getElementById('running-completed');
-        if (runningCheckbox) {
-            runningCheckbox.addEventListener('change', (e) => {
-                const distanceGroup = document.getElementById('running-distance-group');
-                if (e.target.checked) {
-                    distanceGroup.classList.remove('hidden');
-                    document.getElementById('running-distance').required = true;
-                } else {
-                    distanceGroup.classList.add('hidden');
-                    document.getElementById('running-distance').required = false;
-                    document.getElementById('running-distance').value = '';
-                }
-            });
-        }
-    }
-
-    /**
-     * Update total calories display
-     */
-    function updateTotalCalories() {
-        const breakfast = parseInt(document.getElementById('breakfast').value) || 0;
-        const lunch = parseInt(document.getElementById('lunch').value) || 0;
-        const dinner = parseInt(document.getElementById('dinner').value) || 0;
-        const snack = parseInt(document.getElementById('snack').value) || 0;
-        const total = breakfast + lunch + dinner + snack;
-
-        document.getElementById('total-calories').textContent = total;
-    }
-
-    /**
-     * Switch between user tabs
-     */
-    function switchTab(userId) {
-        activeTab = userId;
-
-        // Update tab active states
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.toggle('active', tab.dataset.user === userId);
-        });
-
-        // Check if profile setup is needed
-        const profile = Storage.getUserProfile(userId);
-        if (!profile.setupComplete || !profile.height || !profile.age || !profile.startWeight) {
-            showProfileModal(userId);
-            return;
-        }
-
-        // Update dashboard content for this user
-        updateStatsCards(userId);
-        renderRecentEntries(userId);
-        Charts.renderWeightChart(userId, true);
-        Notifications.checkReminders(userId);
-    }
-
-    /**
-     * Show profile setup modal
-     */
-    function showProfileModal(userId) {
-        const profile = Storage.getUserProfile(userId);
-        document.getElementById('profile-modal-user-name').textContent = profile.name;
-
-        // Pre-fill existing values
-        if (profile.height) document.getElementById('profile-height').value = profile.height;
-        if (profile.age) document.getElementById('profile-age').value = profile.age;
-        if (profile.startWeight) document.getElementById('profile-start-weight').value = profile.startWeight;
-        if (profile.goalWeight) document.getElementById('profile-goal-weight').value = profile.goalWeight;
-
-        document.getElementById('profile-modal').classList.remove('hidden');
-    }
-
-    /**
-     * Hide profile modal
-     */
-    function hideProfileModal() {
-        document.getElementById('profile-modal').classList.add('hidden');
-    }
-
-    /**
-     * Show dashboard (refresh data for active tab)
-     */
-    function showDashboard(userId) {
-        activeTab = userId || activeTab;
-        switchTab(activeTab);
         showScreen('dashboard');
+        renderLeaderboard();
     }
 
-    /**
-     * Update stats cards
-     */
-    function updateStatsCards(userId) {
-        const stats = Storage.getUserStats(userId);
+    function setupEventListeners() {
+        // Back buttons
+        document.getElementById('back-from-detail')?.addEventListener('click', () => {
+            showScreen('dashboard');
+            renderLeaderboard();
+        });
 
-        document.getElementById('stat-current-weight').textContent =
-            stats.currentWeight ? `${stats.currentWeight.toFixed(1)} kg` : '-';
+        document.getElementById('back-from-rules')?.addEventListener('click', () => {
+            showScreen('dashboard');
+        });
 
-        if (stats.weekChange !== null) {
-            const change = stats.weekChange.toFixed(1);
-            const sign = stats.weekChange > 0 ? '+' : '';
-            document.getElementById('stat-week-change').textContent = `${sign}${change} kg`;
+        document.getElementById('back-from-admin')?.addEventListener('click', () => {
+            showScreen('dashboard');
+        });
+
+        // Header buttons
+        document.getElementById('rules-btn')?.addEventListener('click', () => {
+            showScreen('rules-screen');
+        });
+
+        document.getElementById('admin-btn')?.addEventListener('click', () => {
+            showScreen('admin-screen');
+            resetAdminForm();
+        });
+
+        // FAB
+        document.getElementById('fab')?.addEventListener('click', () => {
+            const players = Storage.getAllPlayers();
+            if (players.length === 0) {
+                showToast('Add players via Admin Panel first!');
+                showScreen('admin-screen');
+            } else {
+                showLeaderboardAndPickPlayer();
+            }
+        });
+
+        // Admin login
+        document.getElementById('admin-login')?.addEventListener('click', handleAdminLogin);
+        document.getElementById('admin-password')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAdminLogin();
+        });
+
+        // Add player form
+        document.getElementById('add-player-form')?.addEventListener('submit', handleAddPlayer);
+
+        // PIN entry
+        document.getElementById('pin-submit')?.addEventListener('click', handlePINSubmit);
+        document.getElementById('pin-input')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handlePINSubmit();
+        });
+
+        // Tasks form
+        document.getElementById('tasks-form')?.addEventListener('submit', handleTasksSubmit);
+
+        // Task checkboxes
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateTasksCount);
+        });
+    }
+
+    function handleAdminLogin() {
+        const password = document.getElementById('admin-password').value;
+        if (password === '0189') {
+            document.getElementById('admin-auth').classList.add('hidden');
+            document.getElementById('admin-controls').classList.remove('hidden');
+            renderAdminPlayersList();
         } else {
-            document.getElementById('stat-week-change').textContent = '-';
+            showToast('Incorrect password!', 'error');
+            document.getElementById('admin-password').value = '';
         }
-
-        document.getElementById('stat-days-tracked').textContent = stats.daysTracked;
-        document.getElementById('stat-streak').textContent = stats.streak;
     }
 
-    /**
-     * Render recent entries list
-     */
-    function renderRecentEntries(userId) {
-        const container = document.getElementById('entries-list');
-        const entries = Storage.getDailyEntries(userId, 7);
+    function resetAdminForm() {
+        document.getElementById('admin-auth').classList.remove('hidden');
+        document.getElementById('admin-controls').classList.add('hidden');
+        document.getElementById('admin-password').value = '';
+    }
 
-        if (entries.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">+</div>
-                    <p>No entries yet. Tap + to add your first entry!</p>
-                </div>
-            `;
+    function handleAddPlayer(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('player-name').value.trim();
+        const pin = document.getElementById('player-pin').value.trim();
+        const diet = document.getElementById('player-diet').value.trim();
+
+        if (!name || !pin || !diet) {
+            showToast('All fields required!', 'error');
             return;
         }
 
-        container.innerHTML = entries.map(entry => {
-            const exercises = entry.workout?.exercises?.join(', ') || 'None';
-            const running = entry.running?.completed ?
-                `${entry.running.distance} km` : 'No';
+        Storage.addPlayer(name, pin, diet);
+        showToast(`${name} added to the challenge!`);
+
+        // Clear form and refresh list
+        document.getElementById('add-player-form').reset();
+        renderAdminPlayersList();
+    }
+
+    function renderAdminPlayersList() {
+        const container = document.getElementById('admin-players-list');
+        const players = Storage.getAllPlayers();
+
+        if (players.length === 0) {
+            container.innerHTML = '<p class="empty-state">No players yet</p>';
+            return;
+        }
+
+        container.innerHTML = players.map(player => `
+            <div class="admin-player-item">
+                <div class="admin-player-info">
+                    <div class="admin-player-avatar">${player.name[0]}</div>
+                    <div>
+                        <h3>${player.name}</h3>
+                        <p>Day ${player.currentDay} • ${player.diet}</p>
+                        ${player.eliminated ? '<p class="eliminated">ELIMINATED</p>' : ''}
+                    </div>
+                </div>
+                <button class="btn-icon btn-delete" onclick="UI.removePlayer('${player.id}')" title="Remove">✕</button>
+            </div>
+        `).join('');
+    }
+
+    function removePlayer(playerId) {
+        const player = Storage.getPlayer(playerId);
+        if (!player) return;
+
+        if (confirm(`Remove ${player.name} from the challenge?`)) {
+            Storage.removePlayer(playerId);
+            showToast(`${player.name} removed!`);
+            renderAdminPlayersList();
+        }
+    }
+
+    function renderLeaderboard() {
+        const container = document.getElementById('players-grid');
+        const players = Storage.getAllPlayers();
+
+        if (players.length === 0) {
+            document.getElementById('no-players').classList.remove('hidden');
+            container.innerHTML = '';
+            return;
+        }
+
+        document.getElementById('no-players').classList.add('hidden');
+
+        // Sort by current day (descending), then by name
+        const sorted = [...players].sort((a, b) => {
+            if (a.eliminated && !b.eliminated) return 1;
+            if (!a.eliminated && b.eliminated) return -1;
+            return b.currentDay - a.currentDay;
+        });
+
+        container.innerHTML = sorted.map(player => {
+            const progress = (player.currentDay / 75) * 100;
+            const isToday = !Storage.hasLoggedToday(player.id);
 
             return `
-                <div class="entry-item">
-                    <span class="entry-date">${formatDate(entry.date)}</span>
-                    <div class="entry-details">
-                        <span class="entry-badge">${entry.calories.total} kcal</span>
-                        <span class="entry-badge">${exercises}</span>
-                        <span class="entry-badge">${running}</span>
+                <div class="player-card ${player.eliminated ? 'eliminated' : ''}" onclick="UI.selectPlayer('${player.id}')">
+                    <div class="card-header">
+                        <div class="player-avatar">${player.name[0]}</div>
+                        <div class="card-title">
+                            <h3>${player.name}</h3>
+                            <p class="diet-badge">${player.diet}</p>
+                        </div>
+                        ${player.eliminated ? '<span class="status-eliminated">OUT</span>' : ''}
                     </div>
-                    <div class="entry-actions">
-                        <button class="btn-icon" onclick="UI.editEntry('${entry.id}')" title="Edit">&#9998;</button>
-                        <button class="btn-icon" onclick="UI.deleteEntry('${entry.id}')" title="Delete">&#10005;</button>
+
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <span class="progress-label">Day ${player.currentDay}</span>
+                            <span class="progress-percent">${progress.toFixed(0)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+
+                    ${isToday && !player.eliminated ? '<div class="needs-logging">⚠️ No entry today</div>' : ''}
+
+                    <div class="card-footer">
+                        <span class="stat">${Object.keys(player.dailyLogs || {}).length} logged</span>
+                        <span class="stat">${Object.values(player.dailyLogs || {}).reduce((sum, log) => sum + (log.completedCount || 0), 0) || 0}/${Object.keys(player.dailyLogs || {}).length * 11 || 0} tasks</span>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    /**
-     * Show daily entry form
-     */
-    function showDailyEntryForm() {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('daily-entry-date').textContent = formatDate(today);
+    function selectPlayer(playerId) {
+        selectedPlayerId = playerId;
+        const player = Storage.getPlayer(playerId);
 
-        // Check if entry exists for today
-        const existingEntry = Storage.getDailyEntryByDate(activeTab, today);
+        if (!player) return;
 
-        if (existingEntry) {
-            // Pre-fill form with existing data
-            document.getElementById('breakfast').value = existingEntry.calories.breakfast || 0;
-            document.getElementById('lunch').value = existingEntry.calories.lunch || 0;
-            document.getElementById('dinner').value = existingEntry.calories.dinner || 0;
-            document.getElementById('snack').value = existingEntry.calories.snack || 0;
+        // Update detail view
+        document.getElementById('detail-avatar').textContent = player.name[0];
+        document.getElementById('detail-player-name').textContent = player.name;
+        document.getElementById('detail-player-diet').textContent = player.diet;
+        document.getElementById('detail-status').textContent = `Day ${player.currentDay}`;
 
-            document.getElementById('workout-completed').checked = existingEntry.workout?.completed || false;
-            if (existingEntry.workout?.completed) {
-                document.getElementById('workout-exercises').classList.remove('hidden');
-                existingEntry.workout.exercises?.forEach(exercise => {
-                    const checkbox = document.querySelector(`input[name="exercise"][value="${exercise}"]`);
-                    if (checkbox) checkbox.checked = true;
+        if (player.eliminated) {
+            document.getElementById('detail-eliminated-badge').classList.remove('hidden');
+        } else {
+            document.getElementById('detail-eliminated-badge').classList.add('hidden');
+        }
+
+        // Reset PIN form
+        document.getElementById('pin-container').classList.remove('hidden');
+        document.getElementById('tasks-form').classList.add('hidden');
+        document.getElementById('completed-view').classList.add('hidden');
+        document.getElementById('pin-input').value = '';
+
+        // Update date display
+        const today = new Date();
+        const dateStr = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        document.getElementById('task-date').textContent = dateStr;
+
+        // Reset checkboxes
+        document.querySelectorAll('.task-checkbox').forEach(cb => cb.checked = false);
+
+        showScreen('player-detail');
+    }
+
+    function handlePINSubmit() {
+        const pin = document.getElementById('pin-input').value;
+        const player = Storage.getPlayer(selectedPlayerId);
+
+        if (!player) {
+            showToast('Player not found!', 'error');
+            return;
+        }
+
+        if (pin !== player.pin) {
+            showToast('Incorrect PIN!', 'error');
+            document.getElementById('pin-input').value = '';
+            return;
+        }
+
+        // Check if already logged today
+        if (Storage.hasLoggedToday(selectedPlayerId)) {
+            const log = Storage.getDailyLog(selectedPlayerId, Storage.getToday());
+            if (log && log.tasks) {
+                // Pre-fill form with existing tasks
+                Object.keys(log.tasks).forEach(taskKey => {
+                    const checkbox = document.querySelector(`input[name="task"][value="${taskKey}"]`);
+                    if (checkbox) {
+                        checkbox.checked = log.tasks[taskKey];
+                    }
                 });
             }
-
-            document.getElementById('running-completed').checked = existingEntry.running?.completed || false;
-            if (existingEntry.running?.completed) {
-                document.getElementById('running-distance-group').classList.remove('hidden');
-                document.getElementById('running-distance').value = existingEntry.running.distance || '';
-            }
-        } else {
-            // Reset form
-            document.getElementById('daily-form').reset();
-            document.getElementById('workout-exercises').classList.add('hidden');
-            document.getElementById('running-distance-group').classList.add('hidden');
         }
 
-        updateTotalCalories();
-        showScreen('daily-entry-form');
+        document.getElementById('pin-container').classList.add('hidden');
+        document.getElementById('tasks-form').classList.remove('hidden');
+        updateTasksCount();
     }
 
-    /**
-     * Show weight entry form
-     */
-    function showWeightEntryForm() {
-        const lastWeight = Storage.getLatestWeight(activeTab);
-
-        if (lastWeight) {
-            document.getElementById('weight-comparison').innerHTML = `
-                <div class="weight-comparison-label">Previous Weight</div>
-                <div class="weight-comparison-value">${lastWeight.toFixed(1)} kg</div>
-            `;
-        } else {
-            document.getElementById('weight-comparison').innerHTML = '';
-        }
-
-        document.getElementById('current-weight').value = '';
-        document.getElementById('weight-notes').value = '';
-        document.getElementById('motivation-message').innerHTML = '';
-
-        showScreen('weight-entry-form');
+    function updateTasksCount() {
+        const checked = document.querySelectorAll('.task-checkbox:checked').length;
+        const total = document.querySelectorAll('.task-checkbox').length;
+        document.getElementById('tasks-count').textContent = `${checked}/${total}`;
     }
 
-    /**
-     * Handle profile form submission
-     */
-    function handleProfileSubmit(e) {
+    function handleTasksSubmit(e) {
         e.preventDefault();
 
-        const height = parseInt(document.getElementById('profile-height').value);
-        const age = parseInt(document.getElementById('profile-age').value);
-        const startWeight = parseFloat(document.getElementById('profile-start-weight').value);
-        const goalWeight = parseFloat(document.getElementById('profile-goal-weight').value);
+        const tasks = {};
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            tasks[checkbox.value] = checkbox.checked;
+        });
 
-        const updates = {
-            height,
-            age,
-            startWeight,
-            goalWeight,
-            setupComplete: true
-        };
+        const today = Storage.getToday();
+        const player = Storage.getPlayer(selectedPlayerId);
 
-        if (Storage.updateUserProfile(activeTab, updates)) {
-            // Also save initial weight entry
-            const today = new Date().toISOString().split('T')[0];
-            Storage.saveWeightEntry(activeTab, {
-                date: today,
-                actualWeight: startWeight,
-                predictedWeight: startWeight
-            });
+        Storage.saveDailyTasks(selectedPlayerId, today, tasks);
 
-            hideProfileModal();
-            showToast('Profile saved!');
-            switchTab(activeTab);
+        // Show completion message
+        document.getElementById('tasks-form').classList.add('hidden');
+        document.getElementById('completed-view').classList.remove('hidden');
+
+        const completedCount = Object.values(tasks).filter(v => v).length;
+
+        if (completedCount >= 8) {
+            showToast(`${player.name} crushed it today! ${completedCount}/11 tasks done! 🔥`);
         } else {
-            showToast('Error saving profile', 'error');
+            showToast(`${player.name} is eliminated. Need 8/11 tasks daily.`, 'error');
         }
+
+        // Auto return after 2 seconds
+        setTimeout(() => {
+            showScreen('dashboard');
+            renderLeaderboard();
+        }, 2000);
     }
 
-    /**
-     * Handle daily entry form submission
-     */
-    function handleDailySubmit(e) {
-        e.preventDefault();
-
-        const today = new Date().toISOString().split('T')[0];
-
-        const entry = {
-            date: today,
-            userId: activeTab,
-            calories: {
-                breakfast: parseInt(document.getElementById('breakfast').value) || 0,
-                lunch: parseInt(document.getElementById('lunch').value) || 0,
-                dinner: parseInt(document.getElementById('dinner').value) || 0,
-                snack: parseInt(document.getElementById('snack').value) || 0
-            },
-            workout: {
-                completed: document.getElementById('workout-completed').checked,
-                exercises: []
-            },
-            running: {
-                completed: document.getElementById('running-completed').checked,
-                distance: 0
-            }
-        };
-
-        // Get selected exercises
-        if (entry.workout.completed) {
-            document.querySelectorAll('input[name="exercise"]:checked').forEach(checkbox => {
-                entry.workout.exercises.push(checkbox.value);
-            });
-        }
-
-        // Get running distance
-        if (entry.running.completed) {
-            entry.running.distance = parseFloat(document.getElementById('running-distance').value) || 0;
-        }
-
-        if (Storage.saveDailyEntry(activeTab, entry)) {
-            showToast('Entry saved!');
-
-            // Check if weight entry is due
-            if (Storage.isWeightEntryDue(activeTab)) {
-                showWeightEntryForm();
-            } else {
-                showDashboard(activeTab);
-            }
-        } else {
-            showToast('Error saving entry', 'error');
-        }
+    function showLeaderboardAndPickPlayer() {
+        showScreen('dashboard');
     }
 
-    /**
-     * Handle weight entry form submission
-     */
-    function handleWeightSubmit(e) {
-        e.preventDefault();
-
-        const weight = parseFloat(document.getElementById('current-weight').value);
-        const notes = document.getElementById('weight-notes').value;
-        const today = new Date().toISOString().split('T')[0];
-
-        // Calculate prediction
-        const dailyEntries = Storage.getDailyEntries(activeTab);
-        const profile = Storage.getUserProfile(activeTab);
-        const prediction = Calculations.predictWeight(profile, dailyEntries, weight);
-
-        const entry = {
-            date: today,
-            userId: activeTab,
-            actualWeight: weight,
-            predictedWeight: prediction.predictedWeight,
-            notes: notes
-        };
-
-        if (Storage.saveWeightEntry(activeTab, entry)) {
-            showToast('Weight saved!');
-            showDashboard(activeTab);
-        } else {
-            showToast('Error saving weight', 'error');
-        }
-    }
-
-    /**
-     * Show a specific screen
-     */
     function showScreen(screenId) {
         currentScreen = screenId;
 
@@ -457,15 +327,13 @@ const UI = (function() {
         }
     }
 
-    /**
-     * Show toast notification
-     */
     function showToast(message, type = 'success') {
         const toast = document.getElementById('toast');
         const toastMessage = document.getElementById('toast-message');
 
         toastMessage.textContent = message;
-        toast.classList.remove('hidden');
+        toast.classList.remove('hidden', 'error');
+        if (type === 'error') toast.classList.add('error');
         toast.classList.add('show');
 
         setTimeout(() => {
@@ -476,83 +344,13 @@ const UI = (function() {
         }, 3000);
     }
 
-    /**
-     * Show reminder banner
-     */
-    function showReminderBanner() {
-        const banner = document.getElementById('reminder-banner');
-        if (banner) {
-            banner.classList.remove('hidden');
-        }
-    }
-
-    /**
-     * Hide reminder banner
-     */
-    function hideReminderBanner() {
-        const banner = document.getElementById('reminder-banner');
-        if (banner) {
-            banner.classList.add('hidden');
-        }
-    }
-
-    /**
-     * Update tab streak badges
-     */
-    function updateTabStreaks() {
-        ['katy', 'mona'].forEach(userId => {
-            const stats = Storage.getUserStats(userId);
-            const streakEl = document.getElementById(`tab-${userId}-streak`);
-            if (streakEl) {
-                streakEl.textContent = stats.streak > 0 ? `${stats.streak}d` : '';
-            }
-        });
-    }
-
-    /**
-     * Format date for display
-     */
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const options = { month: 'short', day: 'numeric', year: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
-    }
-
-    /**
-     * Edit entry
-     */
-    function editEntry(entryId) {
-        showDailyEntryForm();
-    }
-
-    /**
-     * Delete entry
-     */
-    function deleteEntry(entryId) {
-        if (confirm('Are you sure you want to delete this entry?')) {
-            if (Storage.deleteDailyEntry(activeTab, entryId)) {
-                showToast('Entry deleted!');
-                showDashboard(activeTab);
-            } else {
-                showToast('Error deleting entry', 'error');
-            }
-        }
-    }
-
     // Public API
     return {
         init,
-        switchTab,
-        showDashboard,
-        showDailyEntryForm,
-        showWeightEntryForm,
+        showScreen,
         showToast,
-        showReminderBanner,
-        hideReminderBanner,
-        updateTabStreaks,
-        editEntry,
-        deleteEntry,
-        getCurrentUser: () => activeTab,
+        selectPlayer,
+        removePlayer,
         getCurrentScreen: () => currentScreen
     };
 })();

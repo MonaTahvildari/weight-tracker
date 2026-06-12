@@ -2,8 +2,6 @@
    Responsive Design (Mobile-First)
    ======================================== */
 
-/* Base styles are mobile-first (320px+) */
-
 /* ========================================
    Small Tablets (640px+)
    ======================================== */
@@ -46,6 +44,10 @@
     .form {
         padding: var(--spacing-xl);
     }
+
+    .tab {
+        padding: 14px var(--spacing-xl);
+    }
 }
 
 /* ========================================
@@ -61,7 +63,6 @@
         height: 500px;
     }
 
-    /* Side-by-side comparison layout */
     .comparison-view .chart-container {
         height: 450px;
     }
@@ -79,7 +80,7 @@
 
 @media (min-width: 1280px) {
     .container {
-        max-width: 1400px;
+        max-width: 1060px;
     }
 
     .chart-container {
@@ -92,33 +93,38 @@
    ======================================== */
 
 @media (max-width: 639px) {
-    /* Stack everything vertically on mobile */
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
 
-    /* Make buttons full width on mobile */
+    /* Full-width submit buttons only */
     .btn:not(.btn-small):not(.btn-icon):not(.btn-back):not(.fab) {
         width: 100%;
     }
 
-    /* Adjust form layout */
     .form-row {
         grid-template-columns: 1fr;
     }
 
-    /* Smaller chart on mobile */
     .chart-container {
-        height: 300px;
+        height: 280px;
     }
 
     /* Entry items stack */
     .entry-item {
         grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .entry-date {
+        font-size: 0.8125rem;
     }
 
     .entry-actions {
         justify-content: flex-end;
+        opacity: 1;
     }
 
     /* Dashboard header */
@@ -131,42 +137,61 @@
         font-size: 1rem;
     }
 
-    /* Stat cards more compact */
+    /* Stat cards compact */
     .stat-card {
-        padding: var(--spacing-md);
+        padding: 14px;
     }
 
     .stat-card-icon {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+        width: 38px;
+        height: 38px;
     }
 
     .stat-card-value {
         font-size: 1.25rem;
     }
 
+    .stat-card-label {
+        font-size: 0.6875rem;
+    }
+
     /* Tab bar compact */
     .tab-bar {
-        margin-bottom: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
     }
 
     .tab {
-        padding: var(--spacing-sm) var(--spacing-md);
-        font-size: 0.85rem;
+        padding: 10px var(--spacing-md);
+        font-size: 0.8125rem;
+        gap: 8px;
     }
 
     .tab-avatar {
-        width: 24px;
-        height: 24px;
-        font-size: 0.65rem;
+        width: 26px;
+        height: 26px;
+        font-size: 0.6875rem;
+    }
+
+    .tab-streak {
+        font-size: 0.625rem;
+        padding: 2px 6px;
+    }
+
+    /* Sections compact */
+    .recent-entries,
+    .chart-section {
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-xl);
     }
 
     /* FAB positioning */
     .fab {
         bottom: var(--spacing-lg);
         right: var(--spacing-lg);
-        width: 56px;
-        height: 56px;
-        font-size: 1.75rem;
+        width: 54px;
+        height: 54px;
+        font-size: 1.5rem;
     }
 
     /* Reminder banner */
@@ -174,6 +199,8 @@
         flex-direction: column;
         text-align: center;
         padding: var(--spacing-md);
+        gap: var(--spacing-sm);
+        font-size: 0.8125rem;
     }
 
     .reminder-actions {
@@ -192,6 +219,7 @@
         right: var(--spacing-md);
         transform: translateX(0) translateY(100px);
         max-width: none;
+        text-align: center;
     }
 
     .toast.show {
@@ -201,6 +229,35 @@
     /* Modal compact */
     .modal {
         padding: var(--spacing-xl);
+        margin: var(--spacing-md);
+        border-radius: var(--radius-xl);
+    }
+
+    .modal-header h2 {
+        font-size: 1.125rem;
+    }
+
+    /* Form sections */
+    .form-section {
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+    }
+
+    .form-group input[type="number"],
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group textarea {
+        padding: 10px 12px;
+        font-size: 1rem;
+    }
+
+    /* Form screen */
+    .form-screen h1 {
+        font-size: 1.25rem;
+    }
+
+    .form-screen .btn-primary {
+        padding: 12px var(--spacing-xl);
     }
 }
 
@@ -217,13 +274,18 @@
         min-height: 44px;
     }
 
-    /* Remove hover effects on touch devices */
+    /* Disable hover transforms on touch */
     .stat-card:hover {
         transform: none;
         box-shadow: var(--shadow-sm);
     }
 
-    /* Use active states instead */
+    /* Show entry actions always on touch */
+    .entry-actions {
+        opacity: 1;
+    }
+
+    /* Active states for touch */
     .btn:active {
         transform: scale(0.98);
         opacity: 0.9;
@@ -233,6 +295,10 @@
         transform: scale(0.98);
         opacity: 0.9;
     }
+
+    .fab:active {
+        transform: scale(0.95);
+    }
 }
 
 /* ========================================
@@ -240,7 +306,6 @@
    ======================================== */
 
 @media print {
-    /* Hide interactive elements */
     .fab,
     .btn-back,
     .reminder-banner,
@@ -250,10 +315,13 @@
         display: none !important;
     }
 
-    /* Adjust colors for print */
     body {
         background: white;
         color: black;
+    }
+
+    .app {
+        background: white;
     }
 
     .stat-card,
@@ -265,7 +333,14 @@
         page-break-inside: avoid;
     }
 
-    /* Ensure chart is visible */
+    .stat-card::before,
+    .chart-section::before,
+    .recent-entries::before,
+    .form-section::before,
+    .card::before {
+        display: none;
+    }
+
     .chart-container {
         height: auto;
         min-height: 400px;
@@ -287,7 +362,7 @@
 
     .spinner {
         animation: none;
-        border: 4px solid var(--primary);
+        border: 3px solid var(--primary);
     }
 }
 

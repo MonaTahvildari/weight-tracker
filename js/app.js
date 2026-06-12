@@ -10,7 +10,7 @@
      * Initialize the application
      */
     function init() {
-        console.log('Weight Tracker initializing...');
+        console.log('75 Hard Challenge initializing...');
 
         try {
             // Initialize storage
@@ -32,10 +32,7 @@
             // Hide loading overlay
             hideLoading();
 
-            console.log('✓ Weight Tracker ready!');
-
-            // Log app info
-            logAppInfo();
+            console.log('✓ 75 Hard Challenge ready!');
 
         } catch (error) {
             console.error('Error initializing app:', error);
