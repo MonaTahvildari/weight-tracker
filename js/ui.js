@@ -296,9 +296,9 @@ const UI = (function() {
         const completedCount = Object.values(tasks).filter(v => v).length;
 
         if (completedCount >= 8) {
-            showToast(`${player.name} crushed it today! ${completedCount}/11 tasks done! 🔥`);
+            showToast(`${player.name} crushed it today! ${completedCount}/10 tasks done! 🔥`);
         } else {
-            showToast(`${player.name} is eliminated. Need 8/11 tasks daily.`, 'error');
+            showToast(`${player.name} is eliminated. Need 8/10 tasks daily.`, 'error');
         }
 
         // Auto return after 2 seconds
