@@ -107,13 +107,14 @@ const UI = (function() {
         const name = document.getElementById('player-name').value.trim();
         const pin = document.getElementById('player-pin').value.trim();
         const diet = document.getElementById('player-diet').value.trim();
+        const personalRule = document.getElementById('player-personal-rule').value.trim();
 
-        if (!name || !pin || !diet) {
+        if (!name || !pin || !diet || !personalRule) {
             showToast('All fields required!', 'error');
             return;
         }
 
-        Storage.addPlayer(name, pin, diet);
+        Storage.addPlayer(name, pin, diet, personalRule);
         showToast(`${name} added to the challenge!`);
 
         // Clear form and refresh list
@@ -137,6 +138,7 @@ const UI = (function() {
                     <div>
                         <h3>${player.name}</h3>
                         <p>Day ${player.currentDay} • ${player.diet}</p>
+                        <p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 2px;">📌 ${player.personalRule}</p>
                         ${player.eliminated ? '<p class="eliminated">ELIMINATED</p>' : ''}
                     </div>
                 </div>
@@ -181,7 +183,7 @@ const UI = (function() {
             // Calculate total tasks completed across all days
             const allLogs = player.dailyLogs || {};
             const totalTasksCompleted = Object.values(allLogs).reduce((sum, log) => sum + (log.completedCount || 0), 0);
-            const totalTasksPossible = 750; // 75 days × 10 tasks
+            const totalTasksPossible = 600; // 75 days × 8 tasks
             const progress = (totalTasksCompleted / totalTasksPossible) * 100;
 
             const today = Storage.getToday();
@@ -247,7 +249,7 @@ const UI = (function() {
             '#14b8a6', // teal
         ];
 
-        const taskNames = ['diet', 'alcohol', 'workout1', 'workout1-outdoor', 'workout2', 'photo', 'water', 'reading', 'journaling', 'social-media'];
+        const taskNames = ['diet', 'alcohol', 'workout1', 'workout1-outdoor', 'workout2', 'photo', 'water', 'reading', 'personal-rule'];
         const taskLabels = {
             'diet': 'Follow Diet',
             'alcohol': 'No Alcohol',
@@ -257,8 +259,7 @@ const UI = (function() {
             'photo': 'Progress Photo',
             'water': 'Drink Water',
             'reading': 'Read 10 Pages',
-            'journaling': 'Journal',
-            'social-media': 'Social Media <1h'
+            'personal-rule': 'Personal Rule'
         };
 
         container.innerHTML = players.map((player, index) => {
@@ -266,7 +267,7 @@ const UI = (function() {
             const todayLog = Storage.getDailyLog(player.id, today);
             const tasks = todayLog ? todayLog.tasks : {};
             const completed = todayLog ? todayLog.completedCount : 0;
-            const progressPercent = (completed / 10) * 100;
+            const progressPercent = (completed / 8) * 100;
 
             const taskChecks = taskNames.map(taskKey => {
                 const isCompleted = tasks[taskKey] || false;
@@ -283,10 +284,11 @@ const UI = (function() {
                             <div>
                                 <h3>${player.name}</h3>
                                 <p class="summary-meta">Day ${player.currentDay || 1} • ${player.diet}</p>
+                                <p style="font-size: 0.7rem; color: ${playerColor}; margin-top: 3px; font-weight: 600;">📌 ${player.personalRule}</p>
                             </div>
                         </div>
                         <div class="summary-score">
-                            <span class="score-number">${completed}/10</span>
+                            <span class="score-number">${completed}/8</span>
                             <span class="score-label">tasks</span>
                         </div>
                     </div>
@@ -299,7 +301,7 @@ const UI = (function() {
                         <div class="daily-progress-fill" style="width: ${progressPercent}%; background: ${playerColor}"></div>
                     </div>
 
-                    ${player.eliminated ? '<div class="summary-eliminated">⚠️ ELIMINATED</div>' : completed >= 8 ? '<div class="summary-safe">✓ ON TRACK</div>' : '<div class="summary-warning">⚠️ NEEDS ' + (8 - completed) + ' MORE</div>'}
+                    ${player.eliminated ? '<div class="summary-eliminated">⚠️ ELIMINATED</div>' : completed >= 6 ? '<div class="summary-safe">✓ ON TRACK</div>' : '<div class="summary-warning">⚠️ NEEDS ' + (6 - completed) + ' MORE</div>'}
                 </div>
             `;
         }).join('');
@@ -316,6 +318,10 @@ const UI = (function() {
         document.getElementById('detail-player-name').textContent = player.name;
         document.getElementById('detail-player-diet').textContent = player.diet;
         document.getElementById('detail-status').textContent = `Day ${player.currentDay || 1}`;
+
+        // Update personal rule display
+        document.getElementById('personal-rule-name').textContent = player.personalRule;
+        document.getElementById('personal-rule-desc').textContent = 'Your custom daily challenge';
 
         if (player.eliminated) {
             document.getElementById('detail-eliminated-badge').classList.remove('hidden');
@@ -399,10 +405,10 @@ const UI = (function() {
 
         const completedCount = Object.values(tasks).filter(v => v).length;
 
-        if (completedCount >= 8) {
-            showToast(`${player.name} crushed it! ${completedCount}/10 tasks done! 🔥`);
+        if (completedCount >= 6) {
+            showToast(`${player.name} crushed it! ${completedCount}/8 tasks done! 🔥`);
         } else {
-            showToast(`${player.name} logged ${completedCount}/10 tasks. Check at 12 PM!`);
+            showToast(`${player.name} logged ${completedCount}/8 tasks. Check at 12 PM!`);
         }
 
         // Auto return after 2 seconds

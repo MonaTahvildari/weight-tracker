@@ -184,25 +184,17 @@
                             </label>
 
                             <label class="task-item">
-                                <input type="checkbox" name="task" value="journaling" class="task-checkbox">
+                                <input type="checkbox" name="task" value="personal-rule" class="task-checkbox">
                                 <div class="task-content">
-                                    <span class="task-name">Journal (5+ min)</span>
-                                    <span class="task-desc">Thoughts, feelings, gratitude</span>
-                                </div>
-                            </label>
-
-                            <label class="task-item">
-                                <input type="checkbox" name="task" value="social-media" class="task-checkbox">
-                                <div class="task-content">
-                                    <span class="task-name">Social Media &lt;1 hour</span>
-                                    <span class="task-desc">Instagram, TikTok, YouTube, X</span>
+                                    <span class="task-name" id="personal-rule-name">Your Personal Rule</span>
+                                    <span class="task-desc" id="personal-rule-desc">Complete your custom challenge</span>
                                 </div>
                             </label>
                         </div>
                     </div>
 
                     <div class="tasks-summary">
-                        <span id="tasks-count">0/10</span>
+                        <span id="tasks-count">0/8</span>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Save Tasks</button>
@@ -284,10 +276,10 @@
                     </div>
 
                     <div class="rule-item">
-                        <span class="rule-number">8</span>
+                        <span class="rule-number">7</span>
                         <div>
-                            <h3>Journal Daily</h3>
-                            <p>Write for at least 5 minutes about your thoughts, feelings, goals, or gratitude.</p>
+                            <h3>Personal Rule</h3>
+                            <p>Each competitor creates their own custom daily challenge and shares it with everyone!</p>
                         </div>
                     </div>
 
@@ -295,7 +287,7 @@
                         <span class="rule-number">⚠️</span>
                         <div>
                             <h3>Elimination Rule</h3>
-                            <p>If you don't complete at least 8 out of 10 tasks by 12 PM daily, you're eliminated and reset to Day 1.</p>
+                            <p>If you don't complete at least 6 out of 8 tasks by 12 PM daily, you're eliminated and reset to Day 1.</p>
                         </div>
                     </div>
                 </div>
@@ -349,6 +341,11 @@
                             <div class="form-group">
                                 <label for="player-diet">Diet Choice</label>
                                 <input type="text" id="player-diet" required placeholder="e.g., Keto, Vegan, Calorie Deficit">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="player-personal-rule">Personal Rule</label>
+                                <input type="text" id="player-personal-rule" required placeholder="e.g., Cold showers daily, No sugar, Run 10km">
                             </div>
 
                             <button type="submit" class="btn btn-primary">Add Player</button>

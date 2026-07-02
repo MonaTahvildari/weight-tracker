@@ -56,7 +56,7 @@ const Storage = (function() {
     /**
      * Add a new player
      */
-    function addPlayer(name, pin, diet) {
+    function addPlayer(name, pin, diet, personalRule) {
         const data = getData();
         const playerId = generateId();
 
@@ -65,6 +65,7 @@ const Storage = (function() {
             name,
             pin,
             diet,
+            personalRule,
             currentDay: 1,
             eliminated: false,
             eliminatedDate: null,
@@ -141,7 +142,7 @@ const Storage = (function() {
 
         // Only advance to next day if they completed enough tasks
         // Elimination happens at 12 PM check, not here
-        if (completedCount >= 8) {
+        if (completedCount >= 6) {
             player.currentDay = Math.min(player.currentDay + 1, 75);
         }
 
