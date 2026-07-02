@@ -141,13 +141,11 @@ const FirebaseSync = (function() {
      */
     function refreshUI() {
         try {
-            const userId = UI.getCurrentUser();
-            if (userId) {
-                UI.switchTab(userId);
-                UI.updateTabStreaks();
-            }
+            // Just reload to refresh all screens with latest data
+            // This ensures all devices stay in sync
+            location.reload();
         } catch (e) {
-            // UI might not be initialized yet
+            console.warn('[Firebase] Unable to refresh UI:', e);
         }
     }
 
