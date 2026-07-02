@@ -86,6 +86,27 @@
             </div>
         </section>
 
+        <!-- Set Personal Rule Screen -->
+        <section id="set-personal-rule" class="screen set-personal-rule hidden">
+            <div class="container">
+                <div class="modal-overlay-content">
+                    <div class="modal">
+                        <h2>Welcome, <span id="rule-player-name">Player</span>!</h2>
+                        <p class="subtitle">Set your personal challenge for the 75 days</p>
+
+                        <form id="set-rule-form" class="form">
+                            <div class="form-group">
+                                <label for="set-rule-input">Your Personal Rule</label>
+                                <input type="text" id="set-rule-input" required placeholder="e.g., Cold showers daily, No sugar, Run 10km, Read 1 hour">
+                                <p class="helper-text">This is your unique daily challenge that everyone will see!</p>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Set Rule & Start Challenge</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Player Detail Screen -->
         <section id="player-detail" class="screen player-detail hidden">
             <div class="container">
@@ -341,11 +362,6 @@
                             <div class="form-group">
                                 <label for="player-diet">Diet Choice</label>
                                 <input type="text" id="player-diet" required placeholder="e.g., Keto, Vegan, Calorie Deficit">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="player-personal-rule">Personal Rule</label>
-                                <input type="text" id="player-personal-rule" required placeholder="e.g., Cold showers daily, No sugar, Run 10km">
                             </div>
 
                             <button type="submit" class="btn btn-primary">Add Player</button>

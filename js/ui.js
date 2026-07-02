@@ -74,6 +74,9 @@ const UI = (function() {
             if (e.key === 'Enter') handlePINSubmit();
         });
 
+        // Set personal rule
+        document.getElementById('set-rule-form')?.addEventListener('submit', handleSetPersonalRule);
+
         // Tasks form
         document.getElementById('tasks-form')?.addEventListener('submit', handleTasksSubmit);
 
@@ -361,6 +364,20 @@ const UI = (function() {
             return;
         }
 
+        // Check if player has set their personal rule
+        if (!player.personalRule) {
+            // Show personal rule setup screen
+            document.getElementById('rule-player-name').textContent = player.name;
+            document.getElementById('pin-container').classList.add('hidden');
+            document.getElementById('set-personal-rule').classList.remove('hidden');
+            return;
+        }
+
+        // Show tasks form
+        showTasksForm();
+    }
+
+    function showTasksForm() {
         // Check if already logged today
         if (Storage.hasLoggedToday(selectedPlayerId)) {
             const log = Storage.getDailyLog(selectedPlayerId, Storage.getToday());
@@ -376,8 +393,34 @@ const UI = (function() {
         }
 
         document.getElementById('pin-container').classList.add('hidden');
+        document.getElementById('set-personal-rule').classList.add('hidden');
         document.getElementById('tasks-form').classList.remove('hidden');
         updateTasksCount();
+    }
+
+    function handleSetPersonalRule(e) {
+        e.preventDefault();
+
+        const personalRule = document.getElementById('set-rule-input').value.trim();
+        const player = Storage.getPlayer(selectedPlayerId);
+
+        if (!personalRule) {
+            showToast('Please enter your personal rule!', 'error');
+            return;
+        }
+
+        // Save the personal rule
+        Storage.setPlayerPersonalRule(selectedPlayerId, personalRule);
+        showToast(`${player.name}, your rule is set! Let's go! 🔥`);
+
+        // Clear form and show tasks
+        document.getElementById('set-rule-input').value = '';
+        document.getElementById('set-personal-rule').classList.add('hidden');
+
+        // Update the personal rule display in tasks form
+        document.getElementById('personal-rule-name').textContent = personalRule;
+
+        showTasksForm();
     }
 
     function updateTasksCount() {

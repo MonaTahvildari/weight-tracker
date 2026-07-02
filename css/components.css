@@ -1244,6 +1244,53 @@
     margin-bottom: var(--spacing-md);
 }
 
+/* Set Personal Rule Screen */
+.set-personal-rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: var(--spacing-lg);
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius-2xl);
+    padding: var(--spacing-2xl);
+    width: 100%;
+    max-width: 460px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl), 0 0 0 1px var(--border);
+    position: relative;
+    animation: modalSlideUp var(--transition-long);
+}
+
+.modal h2 {
+    margin: 0 0 var(--spacing-sm) 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.modal .subtitle {
+    margin-bottom: var(--spacing-xl);
+}
+
 /* Daily Summary */
 .daily-summary-list {
     display: flex;

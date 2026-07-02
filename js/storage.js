@@ -56,7 +56,7 @@ const Storage = (function() {
     /**
      * Add a new player
      */
-    function addPlayer(name, pin, diet, personalRule) {
+    function addPlayer(name, pin, diet, personalRule = '') {
         const data = getData();
         const playerId = generateId();
 
@@ -75,6 +75,21 @@ const Storage = (function() {
 
         saveData(data);
         return playerId;
+    }
+
+    /**
+     * Update player's personal rule
+     */
+    function setPlayerPersonalRule(playerId, personalRule) {
+        const data = getData();
+        const player = data.players[playerId];
+
+        if (player) {
+            player.personalRule = personalRule;
+            saveData(data);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -289,6 +304,7 @@ const Storage = (function() {
         getPlayer,
         getAllPlayers,
         getPlayerByName,
+        setPlayerPersonalRule,
         saveDailyTasks,
         eliminatePlayer,
         resetPlayer,
