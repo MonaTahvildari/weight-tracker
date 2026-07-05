@@ -123,6 +123,9 @@ const Storage = (function() {
      */
     function getAllPlayers() {
         const data = getData();
+        if (!data.players) {
+            return [];
+        }
         return Object.values(data.players);
     }
 
@@ -131,6 +134,9 @@ const Storage = (function() {
      */
     function getPlayerByName(name) {
         const data = getData();
+        if (!data.players) {
+            return null;
+        }
         return Object.values(data.players).find(p => p.name === name) || null;
     }
 
