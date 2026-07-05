@@ -105,11 +105,10 @@
      */
     function handleVisibilityChange() {
         if (!document.hidden) {
-            // User returned to the tab
-            const userId = UI.getCurrentUser();
-            if (userId) {
-                Notifications.checkReminders(userId);
-                UI.updateTabStreaks();
+            // User returned to the tab - refresh leaderboard if on dashboard
+            const currentScreen = UI.getCurrentScreen();
+            if (currentScreen === 'dashboard') {
+                location.reload();
             }
         }
     }
