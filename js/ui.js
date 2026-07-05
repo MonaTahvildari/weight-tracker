@@ -251,12 +251,11 @@ const UI = (function() {
             '#14b8a6', // teal
         ];
 
-        const taskNames = ['diet', 'alcohol', 'workout1', 'workout1-outdoor', 'workout2', 'photo', 'water', 'reading', 'personal-rule'];
+        const taskNames = ['diet', 'alcohol', 'workout1', 'workout2', 'photo', 'water', 'reading', 'personal-rule'];
         const taskLabels = {
             'diet': 'Follow Diet',
             'alcohol': 'No Alcohol',
-            'workout1': 'Workout 1',
-            'workout1-outdoor': 'Outdoor Activity',
+            'workout1': 'Workout 1 (Outdoor)',
             'workout2': 'Workout 2',
             'photo': 'Progress Photo',
             'water': 'Drink Water',
@@ -269,7 +268,7 @@ const UI = (function() {
             const todayLog = Storage.getDailyLog(player.id, today);
             const tasks = todayLog ? todayLog.tasks : {};
             const completed = todayLog ? todayLog.completedCount : 0;
-            const progressPercent = (completed / 8) * 100;
+            const progressPercent = (completed / 8) * 100; // 8 tasks total
 
             const taskChecks = taskNames.map(taskKey => {
                 const isCompleted = tasks[taskKey] || false;
