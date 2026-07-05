@@ -110,14 +110,13 @@ const UI = (function() {
         const name = document.getElementById('player-name').value.trim();
         const pin = document.getElementById('player-pin').value.trim();
         const diet = document.getElementById('player-diet').value.trim();
-        const personalRule = document.getElementById('player-personal-rule').value.trim();
 
-        if (!name || !pin || !diet || !personalRule) {
+        if (!name || !pin || !diet) {
             showToast('All fields required!', 'error');
             return;
         }
 
-        Storage.addPlayer(name, pin, diet, personalRule);
+        Storage.addPlayer(name, pin, diet);
         showToast(`${name} added to the challenge!`);
 
         // Clear form and refresh list
