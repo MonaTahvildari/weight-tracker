@@ -138,14 +138,28 @@ const FirebaseSync = (function() {
 
     /**
      * Refresh the UI after receiving remote data
-     * Silent sync - data is already in localStorage, just log the update
      */
+    let lastReloadTime = 0;
     function refreshUI() {
         try {
-            console.log('[Firebase] Data updated from another device - localStorage synced');
-            // Silent sync: data is already in localStorage from saveData()
-            // No full page reload needed - user will see fresh data on next interaction
-            // This prevents infinite reload loops in Safari
+            console.log('[Firebase] Data updated from another device');
+
+            // Only reload if user is NOT actively logging tasks
+            const currentScreen = UI.getCurrentScreen?.() || 'dashboard';
+            const isInTasksScreen = currentScreen === 'player-detail';
+
+            // Don't reload while user is logging tasks - they'll see updates when done
+            if (isInTasksScreen) {
+                console.log('[Firebase] Skipping reload - user is logging tasks');
+                return;
+            }
+
+            // Debounce reloads (max once per 3 seconds) to prevent refresh loops
+            const now = Date.now();
+            if (now - lastReloadTime > 3000) {
+                lastReloadTime = now;
+                location.reload();
+            }
         } catch (e) {
             console.warn('[Firebase] Unable to refresh UI:', e);
         }
