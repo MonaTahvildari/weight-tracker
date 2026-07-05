@@ -12,8 +12,6 @@ const ASSETS_TO_CACHE = [
     '/weight-tracker/css/responsive.css',
     '/weight-tracker/js/storage.js',
     '/weight-tracker/js/firebase-sync.js',
-    '/weight-tracker/js/calculations.js',
-    '/weight-tracker/js/charts.js',
     '/weight-tracker/js/ui.js',
     '/weight-tracker/js/notifications.js',
     '/weight-tracker/js/app.js',
