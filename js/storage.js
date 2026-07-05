@@ -58,6 +58,12 @@ const Storage = (function() {
      */
     function addPlayer(name, pin, diet, personalRule = '') {
         const data = getData();
+
+        // Ensure players object exists
+        if (!data.players) {
+            data.players = {};
+        }
+
         const playerId = generateId();
 
         data.players[playerId] = {
@@ -97,6 +103,9 @@ const Storage = (function() {
      */
     function removePlayer(playerId) {
         const data = getData();
+        if (!data.players) {
+            data.players = {};
+        }
         delete data.players[playerId];
         saveData(data);
     }
