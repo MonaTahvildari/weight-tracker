@@ -138,16 +138,14 @@ const FirebaseSync = (function() {
 
     /**
      * Refresh the UI after receiving remote data
+     * Silent sync - data is already in localStorage, just log the update
      */
-    let lastReloadTime = 0;
     function refreshUI() {
         try {
-            // Debounce reloads to prevent infinite loops
-            const now = Date.now();
-            if (now - lastReloadTime > 5000) { // Only reload every 5 seconds max
-                lastReloadTime = now;
-                location.reload();
-            }
+            console.log('[Firebase] Data updated from another device - localStorage synced');
+            // Silent sync: data is already in localStorage from saveData()
+            // No full page reload needed - user will see fresh data on next interaction
+            // This prevents infinite reload loops in Safari
         } catch (e) {
             console.warn('[Firebase] Unable to refresh UI:', e);
         }
