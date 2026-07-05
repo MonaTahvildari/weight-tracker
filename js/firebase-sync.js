@@ -139,11 +139,15 @@ const FirebaseSync = (function() {
     /**
      * Refresh the UI after receiving remote data
      */
+    let lastReloadTime = 0;
     function refreshUI() {
         try {
-            // Just reload to refresh all screens with latest data
-            // This ensures all devices stay in sync
-            location.reload();
+            // Debounce reloads to prevent infinite loops
+            const now = Date.now();
+            if (now - lastReloadTime > 5000) { // Only reload every 5 seconds max
+                lastReloadTime = now;
+                location.reload();
+            }
         } catch (e) {
             console.warn('[Firebase] Unable to refresh UI:', e);
         }
