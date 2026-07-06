@@ -9,6 +9,7 @@ const FirebaseSync = (function() {
     let dataRef = null;
     let isListening = false;
     let isSyncing = false; // Prevents sync loops
+    let lastOwnWriteTime = 0; // Track our own writes to ignore echo
 
     const FIREBASE_CONFIG = {
         apiKey: "AIzaSyDrntXc1hCkeBCWZTErvP9oiMDpAZ4yeAE",
@@ -99,21 +100,26 @@ const FirebaseSync = (function() {
         if (!dataRef || isListening) return;
 
         dataRef.on('value', (snapshot) => {
-            // Skip if we're the ones who just wrote
-            if (isSyncing) return;
+            // Skip if we're the ones who just wrote (within 1 second)
+            const now = Date.now();
+            if (now - lastOwnWriteTime < 1000) {
+                console.log('[Firebase] Ignoring our own write echo');
+                return;
+            }
 
             const remoteData = snapshot.val();
             if (!remoteData) return;
 
             const localData = Storage.getData();
 
-            // Only update if remote is newer
-            if (remoteData.lastUpdated > localData.lastUpdated) {
+            // Only update if remote is significantly newer (more than 2 seconds)
+            // This prevents sync loops while allowing legitimate updates
+            if (remoteData.lastUpdated > localData.lastUpdated + 2000) {
+                console.log('[Firebase] Received update from another device');
                 isSyncing = true;
                 Storage.saveData(remoteData);
                 isSyncing = false;
                 refreshUI();
-                console.log('[Firebase] Received update from other device');
             }
         });
 
@@ -128,6 +134,9 @@ const FirebaseSync = (function() {
 
         const playerCount = Object.keys(data.players || {}).length;
         console.log('[Firebase] Pushing data - Players:', playerCount);
+
+        // Mark that we're making a write (used to ignore echo from Firebase listener)
+        lastOwnWriteTime = Date.now();
 
         isSyncing = true;
         dataRef.set(data)
