@@ -13,9 +13,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css?v=1.1.3">
-    <link rel="stylesheet" href="css/components.css?v=1.1.3">
-    <link rel="stylesheet" href="css/responsive.css?v=1.1.3">
+    <link rel="stylesheet" href="css/main.css?v=1.2.0">
+    <link rel="stylesheet" href="css/components.css?v=1.2.0">
+    <link rel="stylesheet" href="css/responsive.css?v=1.2.0">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -42,7 +42,34 @@
             <div class="container">
                 <!-- Header -->
                 <header class="dashboard-header">
-                    <h1 class="app-logo">75 Hard Challenge</h1>
+                    <h1 class="app-logo">
+                        <svg width="48" height="56" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; margin-right: 10px; vertical-align: middle;">
+                            <!-- Phoenix rising (minimalist, modern lines) -->
+                            <!-- Left wing -->
+                            <path d="M 35 50 Q 25 35 20 15 Q 22 28 30 42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Right wing -->
+                            <path d="M 65 50 Q 75 35 80 15 Q 78 28 70 42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Head/neck -->
+                            <path d="M 50 48 Q 50 28 50 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Body -->
+                            <path d="M 50 52 Q 48 65 45 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M 50 52 Q 52 65 55 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- Arrow pointing down to 75 -->
+                            <line x1="50" y1="80" x2="50" y2="95" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            <polygon points="50,100 48,94 52,94" fill="currentColor"/>
+
+                            <!-- "75" in minimalist line style -->
+                            <!-- 7 -->
+                            <line x1="28" y1="110" x2="38" y2="110" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M 38 110 Q 30 115 28 135" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <!-- 5 -->
+                            <line x1="62" y1="110" x2="52" y2="110" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="52" y1="110" x2="52" y2="122" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <line x1="52" y1="122" x2="62" y2="122" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M 62 122 Q 66 125 62 135 Q 52 135 52 130" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Hard Challenge
+                    </h1>
                     <div class="header-actions">
                         <button id="today-btn" class="btn-icon" title="Today's Tasks">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -93,6 +120,15 @@
                     <div class="modal">
                         <h2>Welcome, <span id="rule-player-name">Player</span>!</h2>
                         <p class="subtitle">Set your personal challenge for the 75 days</p>
+
+                        <!-- Avatar Selection -->
+                        <div style="text-align: center; margin: 24px 0;">
+                            <div style="position: relative; display: inline-block;">
+                                <img id="rule-avatar" src="" alt="Your Avatar" style="width: 80px; height: 80px; border-radius: 50%; display: block;">
+                                <button type="button" id="refresh-avatar-btn" style="position: absolute; bottom: -4px; right: -4px; width: 28px; height: 28px; border-radius: 50%; background: var(--primary); border: 2px solid var(--bg-secondary); color: white; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Refresh Avatar">🔄</button>
+                            </div>
+                            <p style="font-size: 0.85rem; color: var(--text-tertiary); margin-top: 16px;">Click to change avatar</p>
+                        </div>
 
                         <form id="set-rule-form" class="form">
                             <div class="form-group">
@@ -373,11 +409,11 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/storage.js?v=1.1.3"></script>
-    <script src="js/firebase-sync.js?v=1.1.3"></script>
-    <script src="js/notifications.js?v=1.1.3"></script>
-    <script src="js/ui.js?v=1.1.3"></script>
-    <script src="js/app.js?v=1.1.3"></script>
+    <script src="js/storage.js?v=1.2.0"></script>
+    <script src="js/firebase-sync.js?v=1.2.0"></script>
+    <script src="js/notifications.js?v=1.2.0"></script>
+    <script src="js/ui.js?v=1.2.0"></script>
+    <script src="js/app.js?v=1.2.0"></script>
 
     <!-- Service Worker Registration -->
     <script>

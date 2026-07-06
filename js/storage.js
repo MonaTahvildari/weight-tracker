@@ -65,6 +65,7 @@ const Storage = (function() {
         }
 
         const playerId = generateId();
+        const avatarSeed = generateId(); // Random seed for DiceBear avatar
 
         data.players[playerId] = {
             id: playerId,
@@ -72,6 +73,7 @@ const Storage = (function() {
             pin,
             diet,
             personalRule,
+            avatarSeed,
             currentDay: 1,
             eliminated: false,
             eliminatedDate: null,
@@ -92,6 +94,21 @@ const Storage = (function() {
 
         if (player) {
             player.personalRule = personalRule;
+            saveData(data);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update player's avatar seed
+     */
+    function updatePlayerAvatarSeed(playerId, newSeed) {
+        const data = getData();
+        const player = data.players[playerId];
+
+        if (player) {
+            player.avatarSeed = newSeed;
             saveData(data);
             return true;
         }
@@ -124,6 +141,12 @@ const Storage = (function() {
             player.currentDay = 1;
         }
 
+        // Ensure avatarSeed exists (for backward compatibility with old players)
+        if (!player.avatarSeed) {
+            player.avatarSeed = generateId();
+            saveData(data);
+        }
+
         return player;
     }
 
@@ -135,6 +158,20 @@ const Storage = (function() {
         if (!data.players) {
             return [];
         }
+
+        // Ensure all players have avatarSeed for DiceBear avatars
+        let needsSave = false;
+        Object.values(data.players).forEach(player => {
+            if (!player.avatarSeed) {
+                player.avatarSeed = generateId();
+                needsSave = true;
+            }
+        });
+
+        if (needsSave) {
+            saveData(data);
+        }
+
         return Object.values(data.players);
     }
 
@@ -320,6 +357,7 @@ const Storage = (function() {
         getAllPlayers,
         getPlayerByName,
         setPlayerPersonalRule,
+        updatePlayerAvatarSeed,
         saveDailyTasks,
         eliminatePlayer,
         resetPlayer,

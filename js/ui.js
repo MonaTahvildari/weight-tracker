@@ -76,6 +76,10 @@ const UI = (function() {
 
         // Set personal rule
         document.getElementById('set-rule-form')?.addEventListener('submit', handleSetPersonalRule);
+        document.getElementById('refresh-avatar-btn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            refreshRuleAvatar();
+        });
 
         // Tasks form
         document.getElementById('tasks-form')?.addEventListener('submit', handleTasksSubmit);
@@ -136,7 +140,7 @@ const UI = (function() {
         container.innerHTML = players.map(player => `
             <div class="admin-player-item">
                 <div class="admin-player-info">
-                    <div class="admin-player-avatar">${player.name[0]}</div>
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}" alt="${player.name}" class="admin-player-avatar" style="width: 40px; height: 40px; border-radius: 50%;">
                     <div>
                         <h3>${player.name}</h3>
                         <p>Day ${player.currentDay} • ${player.diet}</p>
@@ -194,7 +198,7 @@ const UI = (function() {
             return `
                 <div class="player-card ${player.eliminated ? 'eliminated' : ''}" onclick="UI.selectPlayer('${player.id}')">
                     <div class="card-header">
-                        <div class="player-avatar">${player.name[0]}</div>
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}" alt="${player.name}" class="player-avatar" style="width: 48px; height: 48px; border-radius: 50%;">
                         <div class="card-title">
                             <h3>${player.name}</h3>
                             <p class="diet-badge">${player.diet}</p>
@@ -281,7 +285,7 @@ const UI = (function() {
                 <div class="daily-summary-card ${player.eliminated ? 'eliminated' : ''}" style="--player-color: ${playerColor}">
                     <div class="summary-header">
                         <div class="summary-player">
-                            <div class="player-avatar" style="background: linear-gradient(135deg, ${playerColor}, ${playerColor}dd)">${player.name[0]}</div>
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}" alt="${player.name}" class="player-avatar" style="width: 48px; height: 48px; border-radius: 50%;">
                             <div>
                                 <h3>${player.name}</h3>
                                 <p class="summary-meta">Day ${player.currentDay || 1} • ${player.diet}</p>
@@ -315,7 +319,11 @@ const UI = (function() {
         if (!player) return;
 
         // Update detail view
-        document.getElementById('detail-avatar').textContent = player.name[0];
+        const detailAvatar = document.getElementById('detail-avatar');
+        detailAvatar.style.backgroundImage = `url('https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}')`;
+        detailAvatar.style.backgroundSize = 'cover';
+        detailAvatar.style.backgroundPosition = 'center';
+        detailAvatar.textContent = '';
         document.getElementById('detail-player-name').textContent = player.name;
         document.getElementById('detail-player-diet').textContent = player.diet;
         document.getElementById('detail-status').textContent = `Day ${player.currentDay || 1}`;
@@ -366,6 +374,7 @@ const UI = (function() {
         if (!player.personalRule) {
             // Show personal rule setup screen
             document.getElementById('rule-player-name').textContent = player.name;
+            updateRuleAvatar();
             document.getElementById('pin-container').classList.add('hidden');
             document.getElementById('set-personal-rule').classList.remove('hidden');
             return;
@@ -394,6 +403,21 @@ const UI = (function() {
         document.getElementById('set-personal-rule').classList.add('hidden');
         document.getElementById('tasks-form').classList.remove('hidden');
         updateTasksCount();
+    }
+
+    function updateRuleAvatar() {
+        const player = Storage.getPlayer(selectedPlayerId);
+        if (!player) return;
+        const avatarImg = document.getElementById('rule-avatar');
+        avatarImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}&timestamp=${Date.now()}`;
+    }
+
+    function refreshRuleAvatar() {
+        // Generate new random seed
+        const newSeed = Math.random().toString(36).substr(2, 9);
+        Storage.updatePlayerAvatarSeed(selectedPlayerId, newSeed);
+        updateRuleAvatar();
+        showToast('New avatar! Keep clicking if you want another 🎨');
     }
 
     function handleSetPersonalRule(e) {

@@ -30,10 +30,16 @@ body {
    ======================================== */
 
 :root {
-    /* Colors */
+    /* Premium Color Palette */
     --primary: #6366f1;
     --primary-dark: #4f46e5;
     --primary-light: #818cf8;
+    --primary-lighter: #c7d2fe;
+
+    --accent: #ff6b6b;
+    --accent-dark: #ee5a52;
+    --accent-light: #ff8787;
+
     --secondary: #ec4899;
     --secondary-dark: #db2777;
 
@@ -42,34 +48,34 @@ body {
     --error: #f87171;
     --info: #60a5fa;
 
-    /* Dark backgrounds - layered grays */
-    --bg-primary: #09090b;
-    --bg-secondary: #131316;
-    --bg-tertiary: #1c1c21;
-    --bg-hover: #25252b;
-    --bg-elevated: #1c1c21;
+    /* Dark backgrounds - layered grays with depth */
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #141418;
+    --bg-tertiary: #1f1f26;
+    --bg-hover: #2a2a33;
+    --bg-elevated: #1f1f26;
 
     /* Text on dark */
-    --text-primary: #fafafa;
-    --text-secondary: #a1a1aa;
-    --text-tertiary: #52525b;
+    --text-primary: #ffffff;
+    --text-secondary: #9ca3af;
+    --text-tertiary: #6b7280;
 
     /* Borders */
-    --border: rgba(255, 255, 255, 0.06);
-    --border-dark: rgba(255, 255, 255, 0.1);
-    --border-light: rgba(255, 255, 255, 0.03);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-dark: rgba(255, 255, 255, 0.12);
+    --border-light: rgba(255, 255, 255, 0.04);
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+    /* Premium Shadows with depth */
+    --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.5);
+    --shadow: 0 4px 8px 0 rgb(0 0 0 / 0.5), 0 2px 4px -1px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 8px 16px -2px rgb(0 0 0 / 0.6), 0 4px 8px -2px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 16px 32px -4px rgb(0 0 0 / 0.7), 0 6px 12px -4px rgb(0 0 0 / 0.6);
+    --shadow-xl: 0 24px 48px -8px rgb(0 0 0 / 0.8), 0 8px 16px -6px rgb(0 0 0 / 0.6);
 
-    /* Glow effects */
-    --glow-primary: 0 0 20px rgba(99, 102, 241, 0.15);
-    --glow-katy: 0 0 20px rgba(244, 114, 182, 0.15);
-    --glow-mona: 0 0 20px rgba(167, 139, 250, 0.15);
+    /* Premium Glow effects */
+    --glow-primary: 0 0 24px rgba(99, 102, 241, 0.25);
+    --glow-accent: 0 0 24px rgba(255, 107, 107, 0.2);
+    --glow-secondary: 0 0 24px rgba(236, 72, 153, 0.2);
 
     /* Spacing */
     --spacing-xs: 0.25rem;
@@ -87,9 +93,10 @@ body {
     --radius-2xl: 1.25rem;
     --radius-full: 9999px;
 
-    /* Transitions */
+    /* Premium Transitions & Animations */
     --transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-long: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
     --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
     /* Chart Colors */
@@ -334,20 +341,32 @@ p {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: var(--spacing-xl);
-    padding-bottom: var(--spacing-lg);
-    border-bottom: 1px solid var(--border);
+    margin-bottom: var(--spacing-2xl);
+    padding: var(--spacing-lg) 0;
+    border-bottom: 1px solid var(--border-dark);
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.05), transparent);
+    margin: -var(--spacing-lg) -var(--spacing-lg) var(--spacing-2xl) -var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-2xl);
 }
 
 .app-logo {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    transition: transform var(--transition-smooth);
+}
+
+.app-logo:hover {
+    transform: scale(1.02);
 }
 
 .header-actions {
@@ -361,15 +380,19 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius);
-    transition: all var(--transition);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-smooth);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
 }
 
 .header-actions .btn-icon:hover {
-    color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.04);
+    color: var(--primary);
+    background: rgba(99, 102, 241, 0.08);
+    border-color: var(--primary);
+    transform: scale(1.1);
 }
 
 /* ========================================
@@ -681,4 +704,78 @@ p {
 .reminder-actions {
     display: flex;
     gap: var(--spacing-sm);
+}
+
+/* ========================================
+   Premium Animations
+   ======================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.5);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp var(--transition-smooth);
+}
+
+.slide-in-right {
+    animation: slideInRight var(--transition-smooth);
+}
+
+.float {
+    animation: float 3s ease-in-out infinite;
 }
