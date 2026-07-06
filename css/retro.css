@@ -1024,24 +1024,54 @@ select {
 }
 
 /* ===== CUSTOM TASK ICONS ===== */
-.task-icon {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    transition: all 0.3s;
-    filter: drop-shadow(0 0 4px currentColor);
+.task-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin: 4px;
 }
 
-.task-check.done .task-icon {
+.task-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: all 0.3s;
+    filter: drop-shadow(0 0 6px currentColor);
+}
+
+.task-check.done .task-icon-wrapper {
     animation: iconGlow 1.5s ease-in-out infinite;
 }
 
-@keyframes iconGlow {
-    0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
-    50% { filter: drop-shadow(0 0 10px currentColor); }
+.task-done-mark {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: linear-gradient(135deg, #ff006e, #a100f2);
+    border: 2px solid #ffbe0b;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffbe0b;
+    font-weight: 900;
+    font-size: 12px;
+    box-shadow: 0 0 10px rgba(255, 0, 110, 0.5);
 }
 
-.task-check:hover .task-icon {
+@keyframes iconGlow {
+    0%, 100% { filter: drop-shadow(0 0 6px currentColor); }
+    50% { filter: drop-shadow(0 0 12px currentColor); }
+}
+
+.task-check:hover .task-icon-wrapper {
     transform: scale(1.15);
-    filter: drop-shadow(0 0 8px currentColor);
+    filter: drop-shadow(0 0 10px currentColor);
 }

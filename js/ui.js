@@ -267,14 +267,14 @@ const UI = (function() {
             'personal-rule': 'Personal Rule'
         };
         const taskIcons = {
-            'diet': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="13"/><path d="M16 3v26M3 16h26M8 8l18 18M24 8l-18 18"/></svg>',
-            'alcohol': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 8h16v8c0 4-4 8-8 8s-8-4-8-8v-8z"/><line x1="10" y1="8" x2="22" y2="8"/><line x1="9" y1="24" x2="23" y2="24"/><path d="M15 2 L17 8"/></svg>',
-            'workout1': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="8" r="3"/><path d="M16 11v8M10 15l-6 6M22 15l6 6M12 19l-4 8M20 19l4 8"/></svg>',
-            'workout2': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="6" height="16"/><rect x="22" y="8" width="6" height="16"/><line x1="10" y1="16" x2="22" y2="16"/><circle cx="16" cy="4" r="2"/></svg>',
-            'photo': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="28" height="20" rx="2"/><circle cx="16" cy="14" r="4"/><circle cx="8" cy="8" r="1.5"/></svg>',
-            'water': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 2c0 0-4 6-4 10 0 4 3 6 4 6s4-2 4-6c0-4-4-10-4-10z"/><path d="M10 18h12v8c0 2-2 4-4 4h-4c-2 0-4-2-4-4v-8z"/></svg>',
-            'reading': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4v24h20V4H6z"/><path d="M10 8h12M10 12h12M10 16h8M10 20h10" stroke-linecap="round"/><line x1="16" y1="4" x2="16" y2="28"/></svg>',
-            'personal-rule': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 2l4 8h8l-6 5 2 8-8-5-8 5 2-8-6-5h8l4-8z"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg>'
+            'diet': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="20" cy="20" r="15"/><path d="M20 5v30M5 20h30"/><circle cx="20" cy="20" r="8" fill="currentColor" opacity="0.3"/></svg>',
+            'alcohol': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8h16l-3 10h3c0 4-3 7-5 7s-5-3-5-7h3l-3-10z" stroke-linejoin="round"/><circle cx="20" cy="8" r="2" fill="currentColor"/><path d="M8 32h24" stroke-linecap="round" stroke-width="2.5"/><line x1="10" y1="28" x2="30" y2="28" stroke-width="2"/></svg>',
+            'workout1': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="10" r="3" fill="currentColor"/><path d="M20 13v8"/><path d="M13 19l-5 8"/><path d="M27 19l5 8"/><path d="M14 27l-2 8"/><path d="M26 27l2 8"/></svg>',
+            'workout2': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="10" width="7" height="18" rx="1"/><rect x="27" y="10" width="7" height="18" rx="1"/><path d="M13 19h14" stroke-width="2.5"/><circle cx="20" cy="6" r="2.5" fill="currentColor"/></svg>',
+            'photo': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="32" height="24" rx="2"/><circle cx="20" cy="18" r="6"/><circle cx="10" cy="10" r="2" fill="currentColor"/><path d="M4 28l8-8m24 8l-8-8"/></svg>',
+            'water': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4c-3 4-5 8-5 12 0 5 3 8 5 8s5-3 5-8c0-4-2-8-5-12z" fill="currentColor" opacity="0.3"/><path d="M12 20h16v10c0 2-2 4-4 4h-8c-2 0-4-2-4-4v-10z"/></svg>',
+            'reading': '<svg viewBox="0 0 40 40" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 6v28h20V6H10z"/><line x1="14" y1="10" x2="26" y2="10"/><line x1="14" y1="16" x2="26" y2="16"/><line x1="14" y1="22" x2="22" y2="22"/><line x1="14" y1="28" x2="26" y2="28"/><line x1="20" y1="6" x2="20" y2="34" stroke-width="1.5" opacity="0.5"/></svg>',
+            'personal-rule': '<svg viewBox="0 0 40 40" width="28" height="28" fill="currentColor"><path d="M20 4l5 10h11l-9 7 3 10-10-7-10 7 3-10-9-7h11l5-10z" opacity="0.8"/><circle cx="20" cy="20" r="6" fill="currentColor"/></svg>'
         };
 
         container.innerHTML = players.map((player, index) => {
@@ -287,8 +287,7 @@ const UI = (function() {
             const taskChecks = taskNames.map(taskKey => {
                 const isCompleted = tasks[taskKey] || false;
                 return `<span class="task-check ${isCompleted ? 'done' : 'pending'}" title="${taskLabels[taskKey]}" style="--task-color: ${playerColor}">
-                    <span class="task-icon" style="color: ${playerColor}; display: inline-block; margin-right: 4px; opacity: ${isCompleted ? '1' : '0.5'};">${taskIcons[taskKey]}</span>
-                    ${isCompleted ? '✓' : '○'}
+                    <span class="task-icon-wrapper" style="color: ${playerColor}; opacity: ${isCompleted ? '1' : '0.6'};">${taskIcons[taskKey]}</span>${isCompleted ? '<span class="task-done-mark">✓</span>' : ''}
                 </span>`;
             }).join('');
 
