@@ -1032,24 +1032,46 @@ select {
 }
 
 /* ===== CUSTOM TASK ICONS ===== */
+.summary-tasks {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2px;
+    padding: 0.5rem 0;
+    margin: 0.5rem 0;
+}
+
 .task-check {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     position: relative;
-    margin: 4px;
+    margin: 2px;
+    flex-shrink: 0;
 }
 
 .task-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     transition: all 0.3s;
     filter: drop-shadow(0 0 6px currentColor);
+}
+
+@media (min-width: 768px) {
+    .task-icon-wrapper {
+        width: 32px;
+        height: 32px;
+    }
+
+    .task-check {
+        width: 40px;
+        height: 40px;
+    }
 }
 
 .task-check.done .task-icon-wrapper {
