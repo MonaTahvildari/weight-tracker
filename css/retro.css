@@ -20,16 +20,11 @@
 
 /* RETRO BACKGROUND */
 .dashboard {
-    background: linear-gradient(180deg, #0a0e27 0%, #1a0f2e 50%, #0a0e27 100%);
+    background: transparent;
     position: relative;
     overflow: hidden;
     min-height: 100vh;
     min-height: 100dvh;
-}
-
-html, body {
-    height: 100%;
-    width: 100%;
 }
 
 .dashboard::before {
