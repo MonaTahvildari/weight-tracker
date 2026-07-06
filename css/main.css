@@ -21,8 +21,27 @@ body {
         sans-serif;
     line-height: 1.6;
     color: var(--text-primary);
-    background: var(--bg-primary);
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a23 50%, var(--bg-primary) 100%));
     overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* ========================================
@@ -30,35 +49,36 @@ body {
    ======================================== */
 
 :root {
-    /* Premium Color Palette */
-    --primary: #6366f1;
-    --primary-dark: #4f46e5;
-    --primary-light: #818cf8;
-    --primary-lighter: #c7d2fe;
+    /* Luxury Premium Color Palette */
+    --primary: #7c3aed;
+    --primary-dark: #6d28d9;
+    --primary-light: #a78bfa;
+    --primary-lighter: #e9d5ff;
 
-    --accent: #ff6b6b;
-    --accent-dark: #ee5a52;
-    --accent-light: #ff8787;
+    --accent: #f97316;
+    --accent-dark: #ea580c;
+    --accent-light: #fb923c;
 
-    --secondary: #ec4899;
-    --secondary-dark: #db2777;
+    --secondary: #06b6d4;
+    --secondary-dark: #0891b2;
+    --secondary-light: #22d3ee;
 
-    --success: #34d399;
-    --warning: #fbbf24;
-    --error: #f87171;
-    --info: #60a5fa;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --info: #3b82f6;
 
-    /* Dark backgrounds - layered grays with depth */
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #141418;
-    --bg-tertiary: #1f1f26;
-    --bg-hover: #2a2a33;
-    --bg-elevated: #1f1f26;
+    /* Sophisticated Dark backgrounds with depth */
+    --bg-primary: #0f0f12;
+    --bg-secondary: #1a1a1f;
+    --bg-tertiary: #262630;
+    --bg-hover: #323240;
+    --bg-elevated: #262630;
 
-    /* Text on dark */
+    /* Premium Text */
     --text-primary: #ffffff;
-    --text-secondary: #9ca3af;
-    --text-tertiary: #6b7280;
+    --text-secondary: #b0b5c0;
+    --text-tertiary: #7a7f8c;
 
     /* Borders */
     --border: rgba(255, 255, 255, 0.08);
@@ -342,16 +362,35 @@ p {
     align-items: center;
     justify-content: space-between;
     margin-bottom: var(--spacing-2xl);
-    padding: var(--spacing-lg) 0;
-    border-bottom: 1px solid var(--border-dark);
-    background: linear-gradient(180deg, rgba(99, 102, 241, 0.05), transparent);
-    margin: -var(--spacing-lg) -var(--spacing-lg) var(--spacing-2xl) -var(--spacing-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: var(--radius-2xl);
+    margin: -var(--spacing-lg) -var(--spacing-lg) var(--spacing-2xl) -var(--spacing-lg);
+    padding: var(--spacing-xl) var(--spacing-lg);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.dashboard-header:hover::before {
+    left: 100%;
 }
 
 .app-logo {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 900;
     letter-spacing: -0.04em;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 50%, var(--secondary) 100%);
@@ -362,11 +401,13 @@ p {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
-    transition: transform var(--transition-smooth);
+    transition: all var(--transition-smooth);
+    position: relative;
+    z-index: 2;
 }
 
 .app-logo:hover {
-    transform: scale(1.02);
+    transform: scale(1.05) translateY(-2px);
 }
 
 .header-actions {
