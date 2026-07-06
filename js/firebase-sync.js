@@ -54,6 +54,23 @@ const FirebaseSync = (function() {
     }
 
     /**
+     * Merge two player datasets, keeping all logs
+     */
+    function mergePlayerData(localPlayer, remotePlayer) {
+        if (!remotePlayer) return localPlayer;
+        if (!localPlayer) return remotePlayer;
+
+        return {
+            ...remotePlayer,
+            // Keep all daily logs from both sources
+            dailyLogs: {
+                ...localPlayer.dailyLogs,
+                ...remotePlayer.dailyLogs
+            }
+        };
+    }
+
+    /**
      * Initial sync - merge local and remote data
      */
     function initialSync() {
@@ -71,14 +88,35 @@ const FirebaseSync = (function() {
                     console.log('[Firebase] Firebase empty, pushing local data');
                     pushToFirebase(localData);
                 } else if (remoteData.lastUpdated > localData.lastUpdated) {
-                    // Remote is newer, update local ONLY if it has players
+                    // Remote is newer, but MERGE instead of replace
                     const remotePlayerCount = Object.keys(remoteData.players || {}).length;
                     const localPlayerCount = Object.keys(localData.players || {}).length;
 
                     if (remotePlayerCount > 0) {
-                        console.log('[Firebase] Remote is newer, updating local');
+                        console.log('[Firebase] Remote is newer, merging data');
+                        // Merge players: remote data with local logs
+                        const mergedPlayers = {};
+                        Object.keys(remoteData.players || {}).forEach(playerId => {
+                            mergedPlayers[playerId] = mergePlayerData(
+                                localData.players?.[playerId],
+                                remoteData.players[playerId]
+                            );
+                        });
+                        // Also keep local-only players
+                        Object.keys(localData.players || {}).forEach(playerId => {
+                            if (!mergedPlayers[playerId]) {
+                                mergedPlayers[playerId] = localData.players[playerId];
+                            }
+                        });
+
+                        const mergedData = {
+                            ...remoteData,
+                            players: mergedPlayers,
+                            lastUpdated: Math.max(localData.lastUpdated, remoteData.lastUpdated)
+                        };
+
                         isSyncing = true;
-                        Storage.saveData(remoteData);
+                        Storage.saveData(mergedData);
                         isSyncing = false;
                         refreshUI();
                     } else if (localPlayerCount > 0 && remotePlayerCount === 0) {
@@ -137,8 +175,28 @@ const FirebaseSync = (function() {
                 // Detect changes and send notifications
                 detectChangesAndNotify(localData, remoteData);
 
+                // MERGE instead of replace to preserve all logs
+                const mergedPlayers = {};
+                Object.keys(remoteData.players || {}).forEach(playerId => {
+                    mergedPlayers[playerId] = mergePlayerData(
+                        localData.players?.[playerId],
+                        remoteData.players[playerId]
+                    );
+                });
+                // Also keep local-only players
+                Object.keys(localData.players || {}).forEach(playerId => {
+                    if (!mergedPlayers[playerId]) {
+                        mergedPlayers[playerId] = localData.players[playerId];
+                    }
+                });
+
+                const mergedData = {
+                    ...remoteData,
+                    players: mergedPlayers
+                };
+
                 isSyncing = true;
-                Storage.saveData(remoteData);
+                Storage.saveData(mergedData);
                 isSyncing = false;
                 refreshUI();
             }
