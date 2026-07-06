@@ -1022,3 +1022,29 @@ select {
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg, #ffbe0b, #a100f2);
 }
+
+/* ===== TASK EMOJIS ===== */
+.task-emojis {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    padding: 1rem 0;
+    font-size: 1.8rem;
+}
+
+.task-emojis span {
+    transition: transform 0.2s, filter 0.2s;
+    cursor: help;
+}
+
+.task-emojis span:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px rgba(255, 0, 110, 0.6));
+}
+
+.task-emoji {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    display: inline-block;
+}

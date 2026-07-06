@@ -266,6 +266,16 @@ const UI = (function() {
             'reading': 'Read 10 Pages',
             'personal-rule': 'Personal Rule'
         };
+        const taskEmojis = {
+            'diet': '🎯',
+            'alcohol': '⚡',
+            'workout1': '💪',
+            'workout2': '🔥',
+            'photo': '📸',
+            'water': '💧',
+            'reading': '📖',
+            'personal-rule': '👑'
+        };
 
         container.innerHTML = players.map((player, index) => {
             const playerColor = colors[index % colors.length];
@@ -300,6 +310,10 @@ const UI = (function() {
 
                     <div class="summary-tasks">
                         ${taskChecks}
+                    </div>
+
+                    <div class="task-emojis" style="text-align: center; margin: 1rem 0; font-size: 1.8rem; letter-spacing: 0.5rem;">
+                        ${taskNames.map(t => `<span title="${taskLabels[t]}">${taskEmojis[t]}</span>`).join('')}
                     </div>
 
                     <div class="daily-progress-bar">
