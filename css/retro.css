@@ -23,6 +23,13 @@
     background: linear-gradient(180deg, #0a0e27 0%, #1a0f2e 50%, #0a0e27 100%);
     position: relative;
     overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
 }
 
 .dashboard::before {
@@ -65,6 +72,7 @@
     border: 2px solid #ff006e;
     border-bottom: 3px solid #ff006e;
     padding: 2rem;
+    padding-top: max(2rem, env(safe-area-inset-top));
     margin: 0;
     border-radius: 0;
     position: sticky;
@@ -368,8 +376,8 @@
 /* RETRO FAB */
 .fab {
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: max(2rem, env(safe-area-inset-bottom));
+    right: max(2rem, env(safe-area-inset-right));
     width: 70px;
     height: 70px;
     border-radius: 0;
