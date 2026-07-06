@@ -10,7 +10,7 @@ const Storage = (function() {
     // Default data structure
     const DEFAULT_DATA = {
         version: VERSION,
-        lastUpdated: Date.now(),
+        lastUpdated: 0, // Use 0 so Firebase data is always newer on first load
         players: {}
     };
 
