@@ -266,15 +266,15 @@ const UI = (function() {
             'reading': 'Read 10 Pages',
             'personal-rule': 'Personal Rule'
         };
-        const taskEmojis = {
-            'diet': '🎯',
-            'alcohol': '⚡',
-            'workout1': '💪',
-            'workout2': '🔥',
-            'photo': '📸',
-            'water': '💧',
-            'reading': '📖',
-            'personal-rule': '👑'
+        const taskIcons = {
+            'diet': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="16" r="13"/><path d="M16 3v26M3 16h26M8 8l18 18M24 8l-18 18"/></svg>',
+            'alcohol': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 8h16v8c0 4-4 8-8 8s-8-4-8-8v-8z"/><line x1="10" y1="8" x2="22" y2="8"/><line x1="9" y1="24" x2="23" y2="24"/><path d="M15 2 L17 8"/></svg>',
+            'workout1': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="16" cy="8" r="3"/><path d="M16 11v8M10 15l-6 6M22 15l6 6M12 19l-4 8M20 19l4 8"/></svg>',
+            'workout2': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="8" width="6" height="16"/><rect x="22" y="8" width="6" height="16"/><line x1="10" y1="16" x2="22" y2="16"/><circle cx="16" cy="4" r="2"/></svg>',
+            'photo': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="28" height="20" rx="2"/><circle cx="16" cy="14" r="4"/><circle cx="8" cy="8" r="1.5"/></svg>',
+            'water': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 2c0 0-4 6-4 10 0 4 3 6 4 6s4-2 4-6c0-4-4-10-4-10z"/><path d="M10 18h12v8c0 2-2 4-4 4h-4c-2 0-4-2-4-4v-8z"/></svg>',
+            'reading': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 4v24h20V4H6z"/><path d="M10 8h12M10 12h12M10 16h8M10 20h10" stroke-linecap="round"/><line x1="16" y1="4" x2="16" y2="28"/></svg>',
+            'personal-rule': '<svg viewBox="0 0 32 32" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 2l4 8h8l-6 5 2 8-8-5-8 5 2-8-6-5h8l4-8z"/><circle cx="16" cy="16" r="3" fill="currentColor"/></svg>'
         };
 
         container.innerHTML = players.map((player, index) => {
@@ -287,6 +287,7 @@ const UI = (function() {
             const taskChecks = taskNames.map(taskKey => {
                 const isCompleted = tasks[taskKey] || false;
                 return `<span class="task-check ${isCompleted ? 'done' : 'pending'}" title="${taskLabels[taskKey]}" style="--task-color: ${playerColor}">
+                    <span class="task-icon" style="color: ${playerColor}; display: inline-block; margin-right: 4px; opacity: ${isCompleted ? '1' : '0.5'};">${taskIcons[taskKey]}</span>
                     ${isCompleted ? '✓' : '○'}
                 </span>`;
             }).join('');
@@ -310,10 +311,6 @@ const UI = (function() {
 
                     <div class="summary-tasks">
                         ${taskChecks}
-                    </div>
-
-                    <div class="task-emojis" style="text-align: center; margin: 1rem 0; font-size: 1.8rem; letter-spacing: 0.5rem;">
-                        ${taskNames.map(t => `<span title="${taskLabels[t]}">${taskEmojis[t]}</span>`).join('')}
                     </div>
 
                     <div class="daily-progress-bar">
