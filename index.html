@@ -13,10 +13,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/main.css?v=1.5.0">
-    <link rel="stylesheet" href="css/components.css?v=1.5.0">
-    <link rel="stylesheet" href="css/responsive.css?v=1.5.0">
-    <link rel="stylesheet" href="css/retro.css?v=1.5.0">
+    <link rel="stylesheet" href="css/main.css?v=1.6.0">
+    <link rel="stylesheet" href="css/components.css?v=1.6.0">
+    <link rel="stylesheet" href="css/responsive.css?v=1.6.0">
+    <link rel="stylesheet" href="css/retro.css?v=1.6.0">
 
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -44,32 +44,39 @@
                 <!-- Header -->
                 <header class="dashboard-header">
                     <h1 class="app-logo">
-                        <svg width="48" height="56" viewBox="0 0 100 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; margin-right: 10px; vertical-align: middle;">
-                            <!-- Phoenix rising (minimalist, modern lines) -->
-                            <!-- Left wing -->
-                            <path d="M 35 50 Q 25 35 20 15 Q 22 28 30 42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <!-- Right wing -->
-                            <path d="M 65 50 Q 75 35 80 15 Q 78 28 70 42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <!-- Head/neck -->
-                            <path d="M 50 48 Q 50 28 50 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <!-- Body -->
-                            <path d="M 50 52 Q 48 65 45 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M 50 52 Q 52 65 55 75" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <!-- Arrow pointing down to 75 -->
-                            <line x1="50" y1="80" x2="50" y2="95" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                            <polygon points="50,100 48,94 52,94" fill="currentColor"/>
+                        <svg width="60" height="60" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; margin-right: 12px; vertical-align: middle; filter: drop-shadow(0 0 15px rgba(255, 0, 110, 0.8));">
+                            <!-- Background glow effect -->
+                            <defs>
+                                <filter id="neonGlow">
+                                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
 
-                            <!-- "75" in minimalist line style -->
-                            <!-- 7 -->
-                            <line x1="28" y1="110" x2="38" y2="110" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M 38 110 Q 30 115 28 135" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <!-- 5 -->
-                            <line x1="62" y1="110" x2="52" y2="110" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <line x1="52" y1="110" x2="52" y2="122" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <line x1="52" y1="122" x2="62" y2="122" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                            <path d="M 62 122 Q 66 125 62 135 Q 52 135 52 130" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Decorative corners -->
+                            <rect x="8" y="8" width="104" height="104" fill="none" stroke="#ff006e" stroke-width="3" opacity="0.6"/>
+                            <line x1="8" y1="8" x2="25" y2="8" stroke="#00f5ff" stroke-width="2"/>
+                            <line x1="8" y1="8" x2="8" y2="25" stroke="#00f5ff" stroke-width="2"/>
+                            <line x1="112" y1="8" x2="95" y2="8" stroke="#ffbe0b" stroke-width="2"/>
+                            <line x1="112" y1="8" x2="112" y2="25" stroke="#ffbe0b" stroke-width="2"/>
+                            <line x1="8" y1="112" x2="25" y2="112" stroke="#ffbe0b" stroke-width="2"/>
+                            <line x1="8" y1="112" x2="8" y2="95" stroke="#ffbe0b" stroke-width="2"/>
+                            <line x1="112" y1="112" x2="95" y2="112" stroke="#00f5ff" stroke-width="2"/>
+                            <line x1="112" y1="112" x2="112" y2="95" stroke="#00f5ff" stroke-width="2"/>
+
+                            <!-- Bold "7" -->
+                            <text x="28" y="85" font-size="70" font-weight="900" font-family="'Courier New', monospace" fill="#ff006e" stroke="#ff006e" stroke-width="1" filter="url(#neonGlow)">7</text>
+
+                            <!-- Bold "5" -->
+                            <text x="62" y="85" font-size="70" font-weight="900" font-family="'Courier New', monospace" fill="#00f5ff" stroke="#00f5ff" stroke-width="1" filter="url(#neonGlow)">5</text>
+
+                            <!-- Center divider -->
+                            <line x1="60" y1="15" x2="60" y2="105" stroke="#a100f2" stroke-width="2" opacity="0.5"/>
                         </svg>
-                        Hard Challenge
+                        75 HARD
                     </h1>
                     <div class="header-actions">
                         <button id="today-btn" class="btn-icon" title="Today's Tasks">
