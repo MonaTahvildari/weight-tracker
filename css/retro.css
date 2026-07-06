@@ -438,6 +438,137 @@
     font-family: 'Courier New', monospace;
 }
 
+/* ===== UNIVERSAL RETRO STYLING ===== */
+
+/* All Text Elements */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+h1 { color: #ff006e; text-shadow: 0 0 10px rgba(255, 0, 110, 0.5); }
+h2 { color: #ff006e; text-shadow: 0 0 10px rgba(255, 0, 110, 0.5); }
+h3 { color: #00f5ff; text-shadow: 0 0 8px rgba(0, 245, 255, 0.4); }
+
+p, label, span {
+    font-family: 'Inter', sans-serif;
+    color: #b0e0ff;
+}
+
+/* All Form Elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    background: #0a0e27;
+    border: 2px solid #00f5ff;
+    color: #00f5ff;
+    padding: 0.8rem;
+    border-radius: 0;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.2), inset 0 0 5px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #ffbe0b;
+    box-shadow: 0 0 20px rgba(255, 190, 11, 0.4), inset 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #7a7f8c;
+    font-style: italic;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+    accent-color: #ff006e;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+input[type="checkbox"]:hover {
+    filter: drop-shadow(0 0 8px rgba(255, 0, 110, 0.6));
+}
+
+/* Select Dropdowns */
+select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f5ff' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+}
+
+/* All Buttons */
+.btn {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 0;
+    font-weight: 900;
+    transition: all 0.3s;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff006e, #a100f2);
+    border: 3px solid #ffbe0b;
+    color: #ffbe0b;
+    box-shadow: 0 0 20px rgba(255, 0, 110, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+    box-shadow: 0 0 30px rgba(255, 0, 110, 0.6);
+    border-color: #00f5ff;
+    color: #00f5ff;
+}
+
+.btn-outline {
+    border: 2px solid #00f5ff;
+    color: #00f5ff;
+    background: transparent;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
+}
+
+.btn-outline:hover {
+    border-color: #ffbe0b;
+    color: #ffbe0b;
+    box-shadow: 0 0 20px rgba(255, 190, 11, 0.4);
+}
+
+.btn-icon {
+    background: transparent;
+    border: 2px solid #00f5ff;
+    color: #00f5ff;
+    transition: all 0.3s;
+    border-radius: 0;
+    box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
+}
+
+.btn-icon:hover {
+    border-color: #ffbe0b;
+    color: #ffbe0b;
+    box-shadow: 0 0 15px rgba(255, 190, 11, 0.4);
+}
+
 /* ===== ALL SCREENS RETRO STYLING ===== */
 
 /* Player Detail Screen */
@@ -818,4 +949,76 @@
         margin: 1rem;
         padding: 1.5rem;
     }
+}
+
+/* ===== TOAST NOTIFICATIONS ===== */
+.toast {
+    background: linear-gradient(135deg, rgba(26, 31, 58, 0.95), rgba(45, 53, 97, 0.95));
+    border: 2px solid #00f5ff;
+    color: #ffbe0b;
+    border-radius: 0;
+    box-shadow: 0 0 25px rgba(0, 245, 255, 0.4);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.toast.error {
+    border-color: #ff006e;
+    color: #ff006e;
+    box-shadow: 0 0 25px rgba(255, 0, 110, 0.4);
+}
+
+/* ===== MODALS & OVERLAYS ===== */
+.modal-overlay-content {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* ===== FORM HELPERS ===== */
+.helper-text {
+    color: #b0e0ff;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.form-group label {
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Courier New', monospace;
+}
+
+/* ===== EMPTY STATES ===== */
+.empty-state {
+    color: #b0e0ff;
+    font-weight: 700;
+    border: 2px dashed #00f5ff;
+    padding: 2rem;
+    border-radius: 0;
+    box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+}
+
+/* ===== DISABLED STATES ===== */
+:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0a0e27;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ff006e, #00f5ff);
+    border-radius: 0;
+    border: 2px solid #0a0e27;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #ffbe0b, #a100f2);
 }
