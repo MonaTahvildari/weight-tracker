@@ -72,12 +72,20 @@ const FirebaseSync = (function() {
                     pushToFirebase(localData);
                 } else if (remoteData.lastUpdated > localData.lastUpdated) {
                     // Remote is newer, update local ONLY if it has players
-                    if (remoteData.players && Object.keys(remoteData.players).length > 0) {
+                    const remotePlayerCount = Object.keys(remoteData.players || {}).length;
+                    const localPlayerCount = Object.keys(localData.players || {}).length;
+
+                    if (remotePlayerCount > 0) {
                         console.log('[Firebase] Remote is newer, updating local');
                         isSyncing = true;
                         Storage.saveData(remoteData);
                         isSyncing = false;
                         refreshUI();
+                    } else if (localPlayerCount > 0 && remotePlayerCount === 0) {
+                        // DANGER: Remote is empty but local has data - don't accept this!
+                        console.warn('[Firebase] BLOCKED: Remote has 0 players but local has', localPlayerCount, '- refusing to accept empty data');
+                        // Push our data to Firebase instead
+                        pushToFirebase(localData);
                     }
                 } else if (localData.lastUpdated > remoteData.lastUpdated) {
                     // Local is newer or has more data, push to Firebase
@@ -111,10 +119,18 @@ const FirebaseSync = (function() {
             if (!remoteData) return;
 
             const localData = Storage.getData();
+            const remotePlayerCount = Object.keys(remoteData.players || {}).length;
+            const localPlayerCount = Object.keys(localData.players || {}).length;
 
             // Only update if remote is significantly newer (more than 2 seconds)
             // This prevents sync loops while allowing legitimate updates
             if (remoteData.lastUpdated > localData.lastUpdated + 2000) {
+                // SAFETY CHECK: Never accept empty data if we have players locally
+                if (remotePlayerCount === 0 && localPlayerCount > 0) {
+                    console.warn('[Firebase] BLOCKED: Refusing empty data from Firebase (local has', localPlayerCount, 'players)');
+                    return;
+                }
+
                 console.log('[Firebase] Received update from another device');
                 isSyncing = true;
                 Storage.saveData(remoteData);
