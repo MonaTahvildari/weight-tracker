@@ -63,23 +63,32 @@ const FirebaseSync = (function() {
                 const remoteData = snapshot.val();
                 const localData = Storage.getData();
 
+                console.log('[Firebase] Initial sync - Remote:', !!remoteData, 'Local players:', Object.keys(localData.players || {}).length);
+
                 if (!remoteData) {
                     // Firebase is empty, push local data up
+                    console.log('[Firebase] Firebase empty, pushing local data');
                     pushToFirebase(localData);
-                } else if (!localData || localData.lastUpdated < remoteData.lastUpdated) {
-                    // Remote is newer, update local
-                    isSyncing = true;
-                    Storage.saveData(remoteData);
-                    isSyncing = false;
-                    refreshUI();
+                } else if (remoteData.lastUpdated > localData.lastUpdated) {
+                    // Remote is newer, update local ONLY if it has players
+                    if (remoteData.players && Object.keys(remoteData.players).length > 0) {
+                        console.log('[Firebase] Remote is newer, updating local');
+                        isSyncing = true;
+                        Storage.saveData(remoteData);
+                        isSyncing = false;
+                        refreshUI();
+                    }
                 } else if (localData.lastUpdated > remoteData.lastUpdated) {
-                    // Local is newer, push to Firebase
+                    // Local is newer or has more data, push to Firebase
+                    console.log('[Firebase] Local is newer, pushing to Firebase');
                     pushToFirebase(localData);
                 }
                 // If equal timestamps, no action needed
             })
             .catch((error) => {
                 console.error('[Firebase] Initial sync error:', error);
+                // If Firebase fails, just use local data
+                console.log('[Firebase] Using local storage only');
             });
     }
 
@@ -117,14 +126,19 @@ const FirebaseSync = (function() {
     function pushToFirebase(data) {
         if (!dataRef) return;
 
+        const playerCount = Object.keys(data.players || {}).length;
+        console.log('[Firebase] Pushing data - Players:', playerCount);
+
         isSyncing = true;
         dataRef.set(data)
             .then(() => {
                 isSyncing = false;
+                console.log('[Firebase] Push successful - Players:', playerCount);
             })
             .catch((error) => {
                 isSyncing = false;
                 console.error('[Firebase] Push error:', error);
+                console.warn('[Firebase] Data may not sync - running offline mode with local storage only');
             });
     }
 
