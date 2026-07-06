@@ -480,17 +480,113 @@ const UI = (function() {
 
         const completedCount = Object.values(tasks).filter(v => v).length;
 
-        if (completedCount >= 6) {
+        // Perfect day celebration! 🎉
+        if (completedCount === 8) {
+            showCelebration();
+            showToast(`🎉 ${player.name} CRUSHED IT! PERFECT DAY! ALL 8/8! 🔥🎉`);
+        } else if (completedCount >= 6) {
             showToast(`${player.name} crushed it! ${completedCount}/8 tasks done! 🔥`);
         } else {
             showToast(`${player.name} logged ${completedCount}/8 tasks. Check at 12 PM!`);
         }
 
-        // Auto return after 2 seconds
+        // Auto return after 3 seconds (longer for celebration)
         setTimeout(() => {
             showScreen('dashboard');
             renderLeaderboard();
-        }, 2000);
+        }, completedCount === 8 ? 3000 : 2000);
+    }
+
+    function showCelebration() {
+        // Create confetti effect
+        const confetti = document.createElement('div');
+        confetti.id = 'celebration-confetti';
+        confetti.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        `;
+        document.body.appendChild(confetti);
+
+        // Generate confetti pieces
+        const colors = ['#ff006e', '#00f5ff', '#ffbe0b', '#a100f2'];
+        for (let i = 0; i < 50; i++) {
+            const piece = document.createElement('div');
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const size = Math.random() * 10 + 5;
+            const delay = Math.random() * 0.5;
+            const duration = Math.random() * 2 + 2.5;
+
+            piece.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${color};
+                left: ${Math.random() * 100}%;
+                top: -10px;
+                opacity: 1;
+                animation: fall ${duration}s linear ${delay}s forwards;
+                box-shadow: 0 0 ${size}px ${color};
+            `;
+            confetti.appendChild(piece);
+        }
+
+        // Add confetti animation
+        if (!document.getElementById('celebration-style')) {
+            const style = document.createElement('style');
+            style.id = 'celebration-style';
+            style.textContent = `
+                @keyframes fall {
+                    to {
+                        transform: translateY(100vh) rotateZ(360deg);
+                        opacity: 0;
+                    }
+                }
+                @keyframes pulse-celebration {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.1); }
+                }
+                #celebration-popup {
+                    animation: pulse-celebration 0.5s ease-in-out 3;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Add celebration popup
+        const popup = document.createElement('div');
+        popup.id = 'celebration-popup';
+        popup.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ff006e, #a100f2);
+            border: 3px solid #ffbe0b;
+            padding: 2rem 3rem;
+            border-radius: 0;
+            text-align: center;
+            z-index: 10000;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 0 50px rgba(255, 0, 110, 0.8);
+            color: #ffbe0b;
+        `;
+        popup.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎉🔥🎉</div>
+            <div style="font-size: 1.8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;">PERFECT DAY!</div>
+            <div style="font-size: 1.2rem; margin-top: 0.5rem; color: #00f5ff; text-shadow: 0 0 10px #00f5ff;">8/8 TASKS CRUSHED!</div>
+        `;
+        document.body.appendChild(popup);
+
+        // Remove celebration after animation
+        setTimeout(() => {
+            confetti.remove();
+            popup.remove();
+        }, 3500);
     }
 
     function showLeaderboardAndPickPlayer() {
