@@ -67,6 +67,8 @@ const Storage = (function() {
         const playerId = generateId();
         const avatarSeed = generateId(); // Random seed for DiceBear avatar
 
+        const today = new Date().toISOString().split('T')[0];
+
         data.players[playerId] = {
             id: playerId,
             name,
@@ -77,6 +79,8 @@ const Storage = (function() {
             currentDay: 1,
             eliminated: false,
             eliminatedDate: null,
+            lastAdvancedDate: null,
+            startDate: today,
             createdAt: new Date().toISOString(),
             dailyLogs: {}
         };
@@ -139,6 +143,28 @@ const Storage = (function() {
         // Ensure currentDay exists
         if (!player.currentDay) {
             player.currentDay = 1;
+        }
+
+        // Ensure startDate exists (for backward compatibility with old players)
+        if (!player.startDate) {
+            player.startDate = player.createdAt ? player.createdAt.split('T')[0] : getToday();
+            saveData(data);
+        }
+
+        // Calculate actual day based on startDate and completed days
+        if (player.startDate) {
+            const today = getToday();
+            const startDate = new Date(player.startDate);
+            const todayDate = new Date(today);
+            const daysElapsed = Math.floor((todayDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // +1 because day 1 is the first day
+
+            // Count successful days (6+ completed tasks)
+            const successfulDays = Object.values(player.dailyLogs || {})
+                .filter(log => log.completedCount >= 6)
+                .length;
+
+            // Current day is limited by elapsed days but requires completion to advance
+            player.currentDay = Math.min(successfulDays + 1, Math.min(daysElapsed, 75));
         }
 
         // Ensure avatarSeed exists (for backward compatibility with old players)
@@ -207,11 +233,8 @@ const Storage = (function() {
             timestamp: timestamp || new Date().toISOString()
         };
 
-        // Only advance to next day if they completed enough tasks
-        // Elimination happens at 12 PM check, not here
-        if (completedCount >= 6) {
-            player.currentDay = Math.min(player.currentDay + 1, 75);
-        }
+        // Day advancement is calculated in getPlayer() based on successful days + startDate
+        // No manual increment needed here
 
         saveData(data);
         return true;

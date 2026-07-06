@@ -14,9 +14,11 @@ html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a23 50%, var(--bg-primary) 100%));
-    background-attachment: fixed;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1a23 50%, var(--bg-primary) 100%) no-repeat fixed;
     background-color: var(--bg-primary);
+    background-attachment: fixed;
+    min-height: 100vh;
+    height: 100%;
 }
 
 body {
@@ -28,6 +30,7 @@ body {
     overflow-x: hidden;
     position: relative;
     width: 100%;
+    min-height: 100vh;
     margin: 0;
     padding: 0;
 }
@@ -195,10 +198,11 @@ p {
 
 .app {
     min-height: 100vh;
+    min-height: 100dvh;
+    height: 100%;
     position: relative;
-    background:
-        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.08), transparent),
-        var(--bg-primary);
+    background: transparent;
+    overflow-y: auto;
 }
 
 .screen {

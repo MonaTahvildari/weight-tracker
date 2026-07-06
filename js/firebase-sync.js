@@ -104,6 +104,7 @@ const FirebaseSync = (function() {
     /**
      * Start listening for real-time changes from Firebase
      */
+    let lastKnownData = null;
     function startListening() {
         if (!dataRef || isListening) return;
 
@@ -132,6 +133,10 @@ const FirebaseSync = (function() {
                 }
 
                 console.log('[Firebase] Received update from another device');
+
+                // Detect changes and send notifications
+                detectChangesAndNotify(localData, remoteData);
+
                 isSyncing = true;
                 Storage.saveData(remoteData);
                 isSyncing = false;
@@ -140,6 +145,76 @@ const FirebaseSync = (function() {
         });
 
         isListening = true;
+    }
+
+    /**
+     * Detect changes between local and remote data and trigger notifications
+     */
+    function detectChangesAndNotify(localData, remoteData) {
+        const localPlayers = localData.players || {};
+        const remotePlayers = remoteData.players || {};
+        const today = Storage.getToday();
+
+        Object.keys(remotePlayers).forEach(playerId => {
+            const remotePlayer = remotePlayers[playerId];
+            const localPlayer = localPlayers[playerId];
+
+            if (!localPlayer) return; // Skip new players
+
+            // Check for elimination change
+            if (!localPlayer.eliminated && remotePlayer.eliminated) {
+                sendNotification(`⚠️ ${remotePlayer.name} has been ELIMINATED!`, {
+                    icon: '💥',
+                    tag: 'elimination-' + playerId
+                });
+            }
+
+            // Check for perfect day (all 8 tasks completed)
+            const todayLog = remotePlayer.dailyLogs?.[today];
+            const localTodayLog = localPlayer.dailyLogs?.[today];
+
+            if (todayLog && (!localTodayLog || localTodayLog.completedCount !== todayLog.completedCount)) {
+                if (todayLog.completedCount === 8) {
+                    sendNotification(`🎉 ${remotePlayer.name} just completed PERFECT DAY! 8/8! 🔥`, {
+                        icon: '✨',
+                        tag: 'perfect-day-' + playerId
+                    });
+                } else if (todayLog.completedCount >= 6 && (!localTodayLog || localTodayLog.completedCount < 6)) {
+                    sendNotification(`🔥 ${remotePlayer.name} just logged tasks! ${todayLog.completedCount}/8`, {
+                        icon: '💪',
+                        tag: 'tasks-logged-' + playerId
+                    });
+                }
+            }
+        });
+    }
+
+    /**
+     * Send notification - both in-app toast and browser push
+     */
+    function sendNotification(message, options = {}) {
+        // In-app toast notification
+        if (typeof UI !== 'undefined' && UI.showToast) {
+            UI.showToast(message);
+        }
+
+        // Browser push notification
+        if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+                new Notification('75 Hard Challenge', {
+                    body: message,
+                    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" fill="%230a0e27"/><rect x="32" y="32" width="128" height="128" fill="%23ff006e"/><text x="96" y="140" font-size="100" font-weight="900" fill="%2300f5ff" text-anchor="middle">75</text></svg>',
+                    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" fill="%230a0e27"/><text x="96" y="140" font-size="100" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
+                    tag: options.tag || 'notification-' + Date.now(),
+                    requireInteraction: false,
+                    vibrate: [200, 100, 200]
+                });
+            } catch (error) {
+                console.log('[Firebase] Notification error:', error);
+            }
+        }
+
+        console.log('[Firebase] Notification sent:', message);
     }
 
     /**

@@ -10,20 +10,20 @@
   "scope": "/weight-tracker/",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><defs><linearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff006e'/><stop offset='100%25' style='stop-color:%23a100f2'/></linearGradient></defs><rect width='192' height='192' fill='%230a0e27'/><rect x='32' y='32' width='128' height='128' fill='url(%23g1)' opacity='0.9'/><text x='96' y='140' font-size='100' font-weight='900' font-family='Courier New, monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%230a0e27'/><rect x='32' y='32' width='128' height='128' fill='%23ff006e'/><text x='96' y='140' font-size='100' font-weight='bold' font-family='monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g2' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff006e'/><stop offset='100%25' style='stop-color:%23a100f2'/></linearGradient></defs><rect width='512' height='512' fill='%230a0e27'/><rect x='85' y='85' width='342' height='342' fill='url(%23g2)' opacity='0.9'/><text x='256' y='380' font-size='280' font-weight='900' font-family='Courier New, monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%230a0e27'/><rect x='85' y='85' width='342' height='342' fill='%23ff006e'/><text x='256' y='380' font-size='280' font-weight='bold' font-family='monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><defs><linearGradient id='g3' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23ff006e'/><stop offset='100%25' style='stop-color:%23a100f2'/></linearGradient></defs><rect width='180' height='180' fill='%230a0e27' rx='40'/><rect x='28' y='28' width='124' height='124' fill='url(%23g3)' opacity='0.9'/><text x='90' y='125' font-size='90' font-weight='900' font-family='Courier New, monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
-      "sizes": "180x180",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%230a0e27'/><rect x='40' y='40' width='112' height='112' fill='%23ff006e'/><text x='96' y='135' font-size='90' font-weight='bold' font-family='monospace' fill='%2300f5ff' text-anchor='middle'>75</text></svg>",
+      "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "maskable"
     }

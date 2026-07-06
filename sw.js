@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'weight-tracker-v1.6.0';
+const CACHE_NAME = 'weight-tracker-v1.2.5';
 const ASSETS_TO_CACHE = [
     '/weight-tracker/',
     '/weight-tracker/index.html',
@@ -63,11 +63,19 @@ self.addEventListener('activate', (event) => {
                 console.log('[SW] Service worker activated');
                 return self.clients.claim();
             })
+            .then(() => {
+                return self.clients.matchAll();
+            })
+            .then((clients) => {
+                clients.forEach((client) => {
+                    client.postMessage({ type: 'CACHE_CLEARED' });
+                });
+            })
     );
 });
 
 /**
- * Fetch event - serve from cache, fallback to network
+ * Fetch event - network-first for JS, cache-first for others
  */
 self.addEventListener('fetch', (event) => {
     // Skip non-GET requests
@@ -75,46 +83,51 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    event.respondWith(
-        caches.match(event.request)
-            .then((response) => {
-                // Cache hit - return cached response
-                if (response) {
-                    return response;
-                }
+    const url = new URL(event.request.url);
+    const isJsFile = url.pathname.endsWith('.js');
 
-                // Clone the request
-                const fetchRequest = event.request.clone();
-
-                // Make network request
-                return fetch(fetchRequest)
-                    .then((response) => {
-                        // Check if valid response
-                        if (!response || response.status !== 200 || response.type !== 'basic') {
-                            return response;
-                        }
-
-                        // Clone the response
-                        const responseToCache = response.clone();
-
-                        // Cache the fetched response
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                cache.put(event.request, responseToCache);
-                            });
-
+    if (isJsFile) {
+        // Network-only for JavaScript files - no caching at all
+        event.respondWith(
+            fetch(event.request, { cache: 'no-store' })
+                .catch(() => {
+                    // If network fails, try cache as fallback
+                    return caches.match(event.request);
+                })
+        );
+    } else {
+        // Cache-first strategy for other files (CSS, images, etc)
+        event.respondWith(
+            caches.match(event.request)
+                .then((response) => {
+                    if (response) {
                         return response;
-                    })
-                    .catch((error) => {
-                        console.log('[SW] Fetch failed, returning offline page:', error);
+                    }
 
-                        // Return cached index.html for navigation requests
-                        if (event.request.mode === 'navigate') {
-                            return caches.match('/weight-tracker/index.html');
-                        }
-                    });
-            })
-    );
+                    const fetchRequest = event.request.clone();
+
+                    return fetch(fetchRequest)
+                        .then((response) => {
+                            if (!response || response.status !== 200 || response.type !== 'basic') {
+                                return response;
+                            }
+
+                            const responseToCache = response.clone();
+                            caches.open(CACHE_NAME)
+                                .then((cache) => {
+                                    cache.put(event.request, responseToCache);
+                                });
+
+                            return response;
+                        })
+                        .catch(() => {
+                            if (event.request.mode === 'navigate') {
+                                return caches.match('/weight-tracker/index.html');
+                            }
+                        });
+                })
+        );
+    }
 });
 
 /**

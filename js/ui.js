@@ -220,7 +220,7 @@ const UI = (function() {
 
                     <div class="card-footer">
                         <span class="stat">${Object.keys(player.dailyLogs || {}).length} logged</span>
-                        <span class="stat">${Object.values(player.dailyLogs || {}).reduce((sum, log) => sum + (log.completedCount || 0), 0) || 0}/${Object.keys(player.dailyLogs || {}).length * 10 || 0} tasks</span>
+                        <span class="stat">${Object.values(player.dailyLogs || {}).reduce((sum, log) => sum + (log.completedCount || 0), 0) || 0}/${Math.max(Object.keys(player.dailyLogs || {}).length * 8, 8)} tasks</span>
                     </div>
                 </div>
             `;

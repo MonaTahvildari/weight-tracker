@@ -7,9 +7,30 @@
     'use strict';
 
     /**
+     * Check if app version is fresh (cache buster)
+     */
+    function checkAppVersion() {
+        const CURRENT_VERSION = '1.2.5';
+        const STORED_VERSION = localStorage.getItem('appVersion');
+
+        if (STORED_VERSION !== CURRENT_VERSION) {
+            console.log('[App] Version changed:', STORED_VERSION, '→', CURRENT_VERSION);
+            localStorage.setItem('appVersion', CURRENT_VERSION);
+
+            // Clear all caches to force fresh load
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => caches.delete(name));
+                });
+            }
+        }
+    }
+
+    /**
      * Initialize the application
      */
     function init() {
+        checkAppVersion();
         console.log('75 Hard Challenge initializing...');
 
         try {
@@ -28,6 +49,15 @@
             // Initialize Firebase sync
             FirebaseSync.init();
             console.log('✓ Firebase sync initialized');
+
+            // Request notification permission for push notifications
+            if ('Notification' in window && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('✓ Push notifications enabled');
+                    }
+                });
+            }
 
             // Hide loading overlay
             hideLoading();
@@ -158,10 +188,18 @@
      */
     function checkForUpdates() {
         if ('serviceWorker' in navigator) {
+            // Check for updates every 30 seconds
+            setInterval(() => {
+                navigator.serviceWorker.getRegistrations().then(registrations => {
+                    registrations.forEach(registration => {
+                        registration.update();
+                    });
+                });
+            }, 30000);
+
             navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (confirm('A new version is available. Reload to update?')) {
-                    window.location.reload();
-                }
+                console.log('[App] Service worker updated, reloading...');
+                window.location.reload();
             });
         }
     }
@@ -245,7 +283,25 @@
         Storage,
         UI,
         Notifications,
-        version: '1.0.1'
+        version: '1.0.1',
+        // Debug commands
+        checkPlayers: () => {
+            const players = Storage.getAllPlayers();
+            console.log('All players:');
+            players.forEach(p => {
+                console.log(`- ${p.name}: eliminated=${p.eliminated}, day=${p.currentDay}, logs=${Object.keys(p.dailyLogs || {}).length}`);
+            });
+        },
+        clearEliminations: () => {
+            const data = Storage.getData();
+            Object.values(data.players || {}).forEach(p => {
+                p.eliminated = false;
+                p.eliminatedDate = null;
+            });
+            Storage.saveData(data);
+            console.log('All eliminations cleared!');
+            location.reload();
+        }
     };
 
 })();
