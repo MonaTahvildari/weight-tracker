@@ -85,7 +85,7 @@ const FirebaseMessaging = (function() {
      * Store FCM token in Firebase database
      */
     function storeFCMToken(token) {
-        if (!typeof firebase !== 'undefined' || !firebase.apps || firebase.apps.length === 0) return;
+        if (typeof firebase === 'undefined' || !firebase.apps || firebase.apps.length === 0) return;
 
         const db = firebase.database();
         const tokensRef = db.ref('fcmTokens');
