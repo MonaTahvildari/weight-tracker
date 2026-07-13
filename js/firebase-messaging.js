@@ -66,19 +66,30 @@ const FirebaseMessaging = (function() {
     function registerFCMToken() {
         if (!messaging) return;
 
-        messaging.getToken({ vapidKey: 'BEjL5Rp9KuGzfBBB0PxPWKDf8qGiW9IvRFNSuykvyDncGLfQt3JbRXiYxFB-xcrOU2YdFcMdbLEOZcjMo3MOmqQ' })
-            .then((token) => {
-                if (token) {
-                    fcmToken = token;
-                    console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
-                    storeFCMToken(token);
-                } else {
-                    console.log('[FCM] No token available');
-                }
-            })
-            .catch((error) => {
-                console.error('[FCM] Error getting token:', error);
-            });
+        // Get the existing service worker registration and use it for FCM
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            if (registrations.length > 0) {
+                const swRegistration = registrations[0];
+                messaging.getToken({
+                    vapidKey: 'BEjL5Rp9KuGzfBBB0PxPWKDf8qGiW9IvRFNSuykvyDncGLfQt3JbRXiYxFB-xcrOU2YdFcMdbLEOZcjMo3MOmqQ',
+                    serviceWorkerRegistration: swRegistration
+                })
+                .then((token) => {
+                    if (token) {
+                        fcmToken = token;
+                        console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
+                        storeFCMToken(token);
+                    } else {
+                        console.log('[FCM] No token available');
+                    }
+                })
+                .catch((error) => {
+                    console.error('[FCM] Error getting token:', error);
+                });
+            } else {
+                console.warn('[FCM] No service worker registration found');
+            }
+        });
     }
 
     /**
