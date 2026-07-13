@@ -151,20 +151,18 @@ const Storage = (function() {
             saveData(data);
         }
 
-        // Calculate actual day based on startDate and completed days
+        // Calculate actual day based on completed days
         if (player.startDate) {
-            const today = getToday();
-            const startDate = new Date(player.startDate);
-            const todayDate = new Date(today);
-            const daysElapsed = Math.floor((todayDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // +1 because day 1 is the first day
-
             // Count successful days (6+ completed tasks)
             const successfulDays = Object.values(player.dailyLogs || {})
                 .filter(log => log.completedCount >= 6)
                 .length;
 
-            // Current day is limited by elapsed days but requires completion to advance
-            player.currentDay = Math.min(successfulDays + 1, Math.min(daysElapsed, 75));
+            // Current day = completed days + 1
+            // 0 completed → Day 1 (working on it)
+            // 1 completed → Day 2 (finished day 1, now on day 2)
+            // 2 completed → Day 3 (finished day 2, now on day 3)
+            player.currentDay = Math.min(successfulDays + 1, 75);
         }
 
         // Ensure avatarSeed exists (for backward compatibility with old players)
