@@ -66,7 +66,7 @@ const FirebaseMessaging = (function() {
     function registerFCMToken() {
         if (!messaging) return;
 
-        messaging.getToken({ vapidKey: 'BOZpXPQGzqJp_gSKq_n9aTDGF5B_YG8iL_-PdQaPvFT_GDfPxj8N3q7VeL_-lYDGn_7oVJ2kQJ_Mc0q5l_WCvuY' })
+        messaging.getToken({ vapidKey: 'BEjL5Rp9KuGzfBBB0PxPWKDf8qGiW9IvRFNSuykvyDncGLfQt3JbRXiYxFB-xcrOU2YdFcMdbLEOZcjMo3MOmqQ' })
             .then((token) => {
                 if (token) {
                     fcmToken = token;
