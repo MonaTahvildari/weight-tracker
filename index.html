@@ -81,31 +81,6 @@
                         </svg>
                         75 HARD
                     </h1>
-                    <div class="header-actions">
-                        <button id="today-btn" class="btn-icon" title="Today's Tasks">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6"></line>
-                                <line x1="8" y1="2" x2="8" y2="6"></line>
-                                <line x1="3" y1="10" x2="21" y2="10"></line>
-                            </svg>
-                        </button>
-                        <button id="rules-btn" class="btn-icon" title="View Rules">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 12h18"></path>
-                                <path d="M3 6h18"></path>
-                                <path d="M3 18h18"></path>
-                            </svg>
-                        </button>
-                        <button id="admin-btn" class="btn-icon" title="Admin Panel">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="1"></circle>
-                                <path d="M12 1v6m0 6v6"></path>
-                                <path d="M4.22 4.22l4.24 4.24m0 5.08l-4.24 4.24"></path>
-                                <path d="M19.78 4.22l-4.24 4.24m0 5.08l4.24 4.24"></path>
-                            </svg>
-                        </button>
-                    </div>
                 </header>
 
                 <!-- Leaderboard Section -->
@@ -417,14 +392,43 @@
                 </div>
             </div>
         </section>
+        <!-- Bottom Navigation Bar -->
+        <nav class="bottom-nav">
+            <button id="today-btn" class="nav-btn" title="Today's Tasks">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>Today</span>
+            </button>
+            <button id="rules-btn" class="nav-btn" title="View Rules">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12h18"></path>
+                    <path d="M3 6h18"></path>
+                    <path d="M3 18h18"></path>
+                </svg>
+                <span>Rules</span>
+            </button>
+            <button id="admin-btn" class="nav-btn" title="Admin Panel">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <path d="M12 1v6m0 6v6"></path>
+                    <path d="M4.22 4.22l4.24 4.24m0 5.08l-4.24 4.24"></path>
+                    <path d="M19.78 4.22l-4.24 4.24m0 5.08l4.24 4.24"></path>
+                </svg>
+                <span>Admin</span>
+            </button>
+        </nav>
     </div>
 
     <!-- Scripts -->
-    <script src="js/storage.js?v=1.2.5&t=1733"></script>
-    <script src="js/firebase-sync.js?v=1.2.5&t=1733"></script>
-    <script src="js/notifications.js?v=1.2.5&t=1733"></script>
-    <script src="js/ui.js?v=1.2.5&t=1733"></script>
-    <script src="js/app.js?v=1.2.5&t=1733"></script>
+    <script src="js/storage.js?v=1.2.5&t=1734"></script>
+    <script src="js/firebase-sync.js?v=1.2.5&t=1734"></script>
+    <script src="js/notifications.js?v=1.2.5&t=1734"></script>
+    <script src="js/ui.js?v=1.2.5&t=1734"></script>
+    <script src="js/app.js?v=1.2.5&t=1734"></script>
 
     <!-- Service Worker Registration -->
     <script>
