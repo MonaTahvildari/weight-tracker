@@ -160,17 +160,21 @@ const Storage = (function() {
             saveData(data);
         }
 
-        // Calculate current day based on calendar date (only if not eliminated)
-        if (player.startDate && !player.eliminated) {
+        // Advance day counter once per calendar day (only if not eliminated)
+        if (!player.eliminated) {
             const today = getToday();
-            const startDate = new Date(player.startDate);
-            const todayDate = new Date(today);
 
-            // Calculate days elapsed since registration
-            const daysElapsed = Math.floor((todayDate - startDate) / (1000 * 60 * 60 * 24));
+            // Initialize lastAdvancedDate on first run
+            if (!player.lastAdvancedDate) {
+                player.lastAdvancedDate = today;
+            }
 
-            // Current day = days elapsed + 1 (because day 1 is the first day)
-            player.currentDay = Math.min(daysElapsed + 1, 75);
+            // If a new day has passed, increment the counter
+            if (player.lastAdvancedDate !== today) {
+                player.currentDay = Math.min((player.currentDay || 1) + 1, 75);
+                player.lastAdvancedDate = today;
+                saveData(data); // Persist the day advancement
+            }
         }
         // If eliminated, currentDay stays frozen at the day they were eliminated
 
@@ -273,7 +277,7 @@ const Storage = (function() {
             player.currentDay = 1;
             player.eliminated = false;
             player.eliminatedDate = null;
-            player.startDate = getToday(); // Reset start date so day calculation is correct
+            player.lastAdvancedDate = getToday(); // Reset advancement tracker
             player.dailyLogs = {};
             saveData(data);
         }
