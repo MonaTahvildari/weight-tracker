@@ -132,6 +132,15 @@ const Storage = (function() {
     }
 
     /**
+     * Get current day for a player (unified day calculation)
+     */
+    function getPlayerCurrentDay(playerId) {
+        const player = getPlayer(playerId);
+        if (!player) return 1;
+        return player.currentDay || 1;
+    }
+
+    /**
      * Get player by ID
      */
     function getPlayer(playerId) {
@@ -375,6 +384,7 @@ const Storage = (function() {
         addPlayer,
         removePlayer,
         getPlayer,
+        getPlayerCurrentDay,
         getAllPlayers,
         getPlayerByName,
         setPlayerPersonalRule,

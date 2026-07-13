@@ -16,6 +16,13 @@ const UI = (function() {
     function setupEventListeners() {
         // Back buttons
         document.getElementById('back-from-detail')?.addEventListener('click', () => {
+            // Hide all views
+            document.getElementById('pin-container').classList.add('hidden');
+            document.getElementById('set-personal-rule').classList.add('hidden');
+            document.getElementById('tasks-form').classList.add('hidden');
+            document.getElementById('completed-view').classList.add('hidden');
+            document.getElementById('eliminated-view').classList.add('hidden');
+
             showScreen('dashboard');
             renderLeaderboard();
         });
@@ -326,6 +333,13 @@ const UI = (function() {
         const player = Storage.getPlayer(playerId);
 
         if (!player) return;
+
+        // Hide all views first
+        document.getElementById('pin-container').classList.remove('hidden');
+        document.getElementById('set-personal-rule').classList.add('hidden');
+        document.getElementById('tasks-form').classList.add('hidden');
+        document.getElementById('completed-view').classList.add('hidden');
+        document.getElementById('eliminated-view').classList.add('hidden');
 
         // Update detail view
         const detailAvatar = document.getElementById('detail-avatar');
