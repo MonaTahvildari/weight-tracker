@@ -517,6 +517,9 @@ const UI = (function() {
             showToast(`${player.name} logged ${completedCount}/8 tasks. Check at 12 PM!`);
         }
 
+        // Notify other players
+        Notifications.notifyTaskLogging(player.name, completedCount);
+
         // Auto return after 3 seconds (longer for celebration)
         setTimeout(() => {
             showScreen('dashboard');
