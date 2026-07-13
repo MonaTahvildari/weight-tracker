@@ -151,8 +151,8 @@ const Storage = (function() {
             saveData(data);
         }
 
-        // Calculate current day based on calendar date
-        if (player.startDate) {
+        // Calculate current day based on calendar date (only if not eliminated)
+        if (player.startDate && !player.eliminated) {
             const today = getToday();
             const startDate = new Date(player.startDate);
             const todayDate = new Date(today);
@@ -163,6 +163,7 @@ const Storage = (function() {
             // Current day = days elapsed + 1 (because day 1 is the first day)
             player.currentDay = Math.min(daysElapsed + 1, 75);
         }
+        // If eliminated, currentDay stays frozen at the day they were eliminated
 
         // Ensure avatarSeed exists (for backward compatibility with old players)
         if (!player.avatarSeed) {
