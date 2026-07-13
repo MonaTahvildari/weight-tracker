@@ -78,7 +78,8 @@ const FirebaseMessaging = (function() {
                     if (token) {
                         fcmToken = token;
                         console.log('[FCM] Token obtained:', token.substring(0, 20) + '...');
-                        storeFCMToken(token);
+                        // Token storage in Firebase requires Cloud Function backend to be useful
+                        // For now, we use local browser notifications instead
                     } else {
                         console.log('[FCM] No token available');
                     }
