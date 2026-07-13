@@ -83,6 +83,9 @@ const UI = (function() {
         // Restart button
         document.getElementById('restart-btn')?.addEventListener('click', handleRestartChallenge);
 
+        // Test notification button
+        document.getElementById('test-notification-btn')?.addEventListener('click', handleTestNotification);
+
         // Task checkboxes
         document.querySelectorAll('.task-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', updateTasksCount);
@@ -549,6 +552,27 @@ const UI = (function() {
             showToast(`${player.name} is back in the game! 🚀`);
             showScreen('dashboard');
             renderLeaderboard();
+        }
+    }
+
+    function handleTestNotification() {
+        // Send test notification
+        const testMessage = '🔔 TEST: Push notifications are working! ✅';
+
+        // Show in-app toast
+        showToast(testMessage);
+
+        // Send browser notification
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('75 Hard Challenge - Test', {
+                body: 'Push notifications are working perfectly! 🔥',
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
+                badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
+                vibrate: [200, 100, 200, 100, 200],
+                tag: 'test-notification'
+            });
+        } else if ('Notification' in window) {
+            showToast('Please enable notifications first! 🔔', 'info');
         }
     }
 
