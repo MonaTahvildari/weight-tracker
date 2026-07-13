@@ -185,7 +185,7 @@ const UI = (function() {
             return b.currentDay - a.currentDay;
         });
 
-        container.innerHTML = sorted.map(player => {
+        container.innerHTML = sorted.map((player, index) => {
             // Calculate total tasks completed across all days
             const allLogs = player.dailyLogs || {};
             const totalTasksCompleted = Object.values(allLogs).reduce((sum, log) => sum + (log.completedCount || 0), 0);
@@ -195,8 +195,15 @@ const UI = (function() {
             const today = Storage.getToday();
             const isToday = !Storage.hasLoggedToday(player.id);
 
+            // Rank badge (1st, 2nd, 3rd, etc.)
+            const rankBadges = ['🥇', '🥈', '🥉'];
+            const rankBadge = rankBadges[index] || `#${index + 1}`;
+            const isTopThree = index < 3;
+
             return `
-                <div class="player-card ${player.eliminated ? 'eliminated' : ''}" onclick="UI.selectPlayer('${player.id}')">
+                <div class="player-card ${player.eliminated ? 'eliminated' : ''} ${isTopThree ? 'top-rank' : ''}" data-rank="${index + 1}" onclick="UI.selectPlayer('${player.id}')">
+                    <div class="rank-badge">${rankBadge}</div>
+
                     <div class="card-header">
                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=${player.avatarSeed}" alt="${player.name}" class="player-avatar" style="width: 48px; height: 48px; border-radius: 50%;">
                         <div class="card-title">
@@ -208,7 +215,7 @@ const UI = (function() {
 
                     <div class="progress-section">
                         <div class="progress-info">
-                            <span class="progress-label">Day ${player.currentDay || 1}</span>
+                            <span class="progress-label day-counter">Day ${player.currentDay || 1}</span>
                             <span class="progress-percent">${progress.toFixed(0)}%</span>
                         </div>
                         <div class="progress-bar">
