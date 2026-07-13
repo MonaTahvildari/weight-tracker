@@ -556,23 +556,37 @@ const UI = (function() {
     }
 
     function handleTestNotification() {
-        // Send test notification
-        const testMessage = '🔔 TEST: Push notifications are working! ✅';
+        // Show FCM diagnostic info
+        const diagnostics = [];
 
-        // Show in-app toast
-        showToast(testMessage);
+        // Check notification permission
+        const notifPermission = 'Notification' in window ? Notification.permission : 'not supported';
+        diagnostics.push(`Notification Permission: ${notifPermission.toUpperCase()}`);
 
-        // Send browser notification
-        if ('Notification' in window && Notification.permission === 'granted') {
-            new Notification('75 Hard Challenge - Test', {
-                body: 'Push notifications are working perfectly! 🔥',
-                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
-                badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
-                vibrate: [200, 100, 200, 100, 200],
-                tag: 'test-notification'
+        // Check service worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                if (registrations.length > 0) {
+                    diagnostics.push(`Service Worker: REGISTERED ✓`);
+                } else {
+                    diagnostics.push(`Service Worker: NOT FOUND`);
+                }
+                displayFCMDiagnostics(diagnostics);
+            }).catch(() => {
+                diagnostics.push(`Service Worker: ERROR`);
+                displayFCMDiagnostics(diagnostics);
             });
-        } else if ('Notification' in window) {
-            showToast('Please enable notifications first! 🔔', 'info');
+        } else {
+            diagnostics.push(`Service Worker: NOT SUPPORTED`);
+            displayFCMDiagnostics(diagnostics);
+        }
+
+        function displayFCMDiagnostics(info) {
+            const message = `FCM Setup Status:\n${info.join('\n')}\n\nTo send REAL push notifications:\n1. Firebase Console → Cloud Messaging\n2. New Campaign → Test on Device\n3. Check browser console for FCM token`;
+            showToast(message);
+            console.log('=== FCM DIAGNOSTIC ===');
+            console.log(info.join('\n'));
+            console.log('Setup looks good! You can now send messages from Firebase Console.');
         }
     }
 
