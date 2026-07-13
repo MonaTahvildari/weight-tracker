@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'weight-tracker-v1.4.0';
+const CACHE_NAME = 'weight-tracker-v1.4.1';
 const ASSETS_TO_CACHE = [
     '/weight-tracker/',
     '/weight-tracker/index.html',
@@ -157,25 +157,35 @@ self.addEventListener('sync', (event) => {
 });
 
 /**
- * Push notification event (for future use)
+ * Push notification event (Firebase Cloud Messaging)
  */
 self.addEventListener('push', (event) => {
-    if (event.data) {
-        const data = event.data.json();
+    console.log('[SW] Push message received:', event);
 
-        const options = {
-            body: data.body || 'Time to log your daily entry!',
-            icon: '/weight-tracker/assets/icons/icon-192x192.png',
-            badge: '/weight-tracker/assets/icons/icon-96x96.png',
-            vibrate: [200, 100, 200],
-            tag: 'weight-tracker-notification',
-            requireInteraction: false
-        };
+    if (!event.data) return;
 
-        event.waitUntil(
-            self.registration.showNotification(data.title || 'Weight Tracker', options)
-        );
+    let data = {};
+    try {
+        data = event.data.json();
+    } catch (e) {
+        data = { body: event.data.text() };
     }
+
+    const options = {
+        body: data.notification?.body || data.body || '75 Hard Challenge update!',
+        icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
+        badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" fill="%230a0e27"/><text x="60" y="85" font-size="70" font-weight="900" fill="%23ff006e" text-anchor="middle">75</text></svg>',
+        vibrate: [200, 100, 200],
+        tag: data.notification?.tag || 'fcm-notification',
+        requireInteraction: false
+    };
+
+    event.waitUntil(
+        self.registration.showNotification(
+            data.notification?.title || '75 Hard Challenge',
+            options
+        )
+    );
 });
 
 /**

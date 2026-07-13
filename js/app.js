@@ -50,14 +50,9 @@
             FirebaseSync.init();
             console.log('✓ Firebase sync initialized');
 
-            // Request notification permission for push notifications
-            if ('Notification' in window && Notification.permission === 'default') {
-                Notification.requestPermission().then(permission => {
-                    if (permission === 'granted') {
-                        console.log('✓ Push notifications enabled');
-                    }
-                });
-            }
+            // Initialize Firebase Cloud Messaging
+            FirebaseMessaging.init();
+            console.log('✓ Firebase Cloud Messaging initialized');
 
             // Hide loading overlay
             hideLoading();
