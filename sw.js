@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'weight-tracker-v1.3.1';
+const CACHE_NAME = 'weight-tracker-v1.3.2';
 const ASSETS_TO_CACHE = [
     '/weight-tracker/',
     '/weight-tracker/index.html',
