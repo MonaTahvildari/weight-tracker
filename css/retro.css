@@ -1268,3 +1268,75 @@ select {
 .screen {
     padding-bottom: 2rem;
 }
+
+/* ===== ELIMINATED VIEW ===== */
+
+.eliminated-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, rgba(255, 0, 110, 0.1), rgba(0, 245, 255, 0.05));
+    position: relative;
+    z-index: 2;
+}
+
+.eliminated-message {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, rgba(26, 31, 58, 0.9), rgba(45, 53, 97, 0.8));
+    border: 3px solid #ff006e;
+    box-shadow: 0 0 40px rgba(255, 0, 110, 0.6), 0 0 60px rgba(0, 245, 255, 0.3);
+    max-width: 500px;
+    animation: eliminatedShake 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes eliminatedShake {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.05) rotate(-2deg); }
+    75% { transform: scale(1.05) rotate(2deg); }
+}
+
+.eliminated-icon {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 1rem;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.eliminated-message h2 {
+    font-size: 3rem;
+    color: #ff006e;
+    text-shadow: 0 0 20px rgba(255, 0, 110, 0.8);
+    margin: 1rem 0;
+    animation: pulse 2s infinite;
+}
+
+.eliminated-message p {
+    font-size: 1.2rem;
+    color: #00f5ff;
+    margin: 1rem 0;
+    text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+}
+
+.eliminated-day {
+    font-size: 1rem !important;
+    color: #ffbe0b !important;
+    margin: 2rem 0 !important;
+}
+
+.eliminated-message .btn {
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(255, 0, 110, 0.8); }
+    50% { text-shadow: 0 0 40px rgba(255, 0, 110, 1); }
+}

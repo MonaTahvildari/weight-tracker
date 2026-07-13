@@ -73,6 +73,9 @@ const UI = (function() {
         // Tasks form
         document.getElementById('tasks-form')?.addEventListener('submit', handleTasksSubmit);
 
+        // Restart button
+        document.getElementById('restart-btn')?.addEventListener('click', handleRestartChallenge);
+
         // Task checkboxes
         document.querySelectorAll('.task-checkbox').forEach(checkbox => {
             checkbox.addEventListener('change', updateTasksCount);
@@ -393,11 +396,20 @@ const UI = (function() {
     function showTasksForm() {
         const player = Storage.getPlayer(selectedPlayerId);
 
-        // Check if player is eliminated
+        // If eliminated, show "You Lost" screen instead
         if (player.eliminated) {
-            showToast(`❌ ${player.name} has been ELIMINATED!`, 'error');
-            showScreen('dashboard');
-            renderLeaderboard();
+            document.getElementById('pin-container').classList.add('hidden');
+            document.getElementById('set-personal-rule').classList.add('hidden');
+            document.getElementById('tasks-form').classList.add('hidden');
+            document.getElementById('completed-view').classList.add('hidden');
+            document.getElementById('eliminated-view').classList.remove('hidden');
+
+            // Update the day text
+            const eliminatedDayText = document.getElementById('eliminated-day-text');
+            if (eliminatedDayText) {
+                eliminatedDayText.textContent = `You made it to Day ${player.currentDay}... not bad! 💪`;
+            }
+
             return;
         }
 
@@ -510,6 +522,17 @@ const UI = (function() {
             showScreen('dashboard');
             renderLeaderboard();
         }, completedCount === 8 ? 3000 : 2000);
+    }
+
+    function handleRestartChallenge() {
+        const player = Storage.getPlayer(selectedPlayerId);
+
+        if (confirm(`${player.name}, do you want to START OVER and try again? 🔥`)) {
+            Storage.resetPlayer(selectedPlayerId);
+            showToast(`${player.name} is back in the game! 🚀`);
+            showScreen('dashboard');
+            renderLeaderboard();
+        }
     }
 
     function showCelebration() {
