@@ -4,9 +4,6 @@
  */
 
 const Notifications = (function() {
-    let last12PMCheck = null;
-    let last1150PMReminder = null;
-
     /**
      * Initialize notifications
      */
@@ -23,14 +20,25 @@ const Notifications = (function() {
     }
 
     /**
+     * Get/set last check date from localStorage
+     */
+    function getLastCheck(type) {
+        return localStorage.getItem(`lastCheck_${type}`);
+    }
+
+    function setLastCheck(type, date) {
+        localStorage.setItem(`lastCheck_${type}`, date);
+    }
+
+    /**
      * Check daily: eliminate players who didn't complete yesterday (6+ tasks)
      */
     function checkDaily12PMElimination() {
         const today = Storage.getToday();
 
-        // Only check once per day
-        if (last12PMCheck === today) return;
-        last12PMCheck = today;
+        // Only check once per day (persisted in localStorage)
+        if (getLastCheck('elimination') === today) return;
+        setLastCheck('elimination', today);
 
         const players = Storage.getAllPlayers();
         const yesterday = new Date();
@@ -62,10 +70,10 @@ const Notifications = (function() {
         // Check if it's 11:50 PM (23:50)
         if (hours !== 23 || minutes < 50 || minutes > 51) return; // Allow 1 minute window
 
-        // Don't check twice on the same day
+        // Don't check twice on the same day (persisted in localStorage)
         const today = Storage.getToday();
-        if (last1150PMReminder === today) return;
-        last1150PMReminder = today;
+        if (getLastCheck('reminder') === today) return;
+        setLastCheck('reminder', today);
 
         const players = Storage.getAllPlayers();
 
