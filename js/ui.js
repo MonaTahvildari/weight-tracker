@@ -391,6 +391,16 @@ const UI = (function() {
     }
 
     function showTasksForm() {
+        const player = Storage.getPlayer(selectedPlayerId);
+
+        // Check if player is eliminated
+        if (player.eliminated) {
+            showToast(`❌ ${player.name} has been ELIMINATED!`, 'error');
+            showScreen('dashboard');
+            renderLeaderboard();
+            return;
+        }
+
         // Check if already logged today
         if (Storage.hasLoggedToday(selectedPlayerId)) {
             const log = Storage.getDailyLog(selectedPlayerId, Storage.getToday());
@@ -460,13 +470,22 @@ const UI = (function() {
     function handleTasksSubmit(e) {
         e.preventDefault();
 
+        const player = Storage.getPlayer(selectedPlayerId);
+
+        // Check if player is eliminated
+        if (player.eliminated) {
+            showToast(`❌ ${player.name} has been ELIMINATED and cannot log tasks!`, 'error');
+            showScreen('dashboard');
+            renderLeaderboard();
+            return;
+        }
+
         const tasks = {};
         document.querySelectorAll('.task-checkbox').forEach(checkbox => {
             tasks[checkbox.value] = checkbox.checked;
         });
 
         const today = Storage.getToday();
-        const player = Storage.getPlayer(selectedPlayerId);
 
         Storage.saveDailyTasks(selectedPlayerId, today, tasks);
 
