@@ -32,8 +32,16 @@ const Notifications = (function() {
 
     /**
      * Check daily: eliminate players who didn't complete yesterday (6+ tasks)
+     * Runs at 12 AM (midnight) when the new day starts
      */
     function checkDaily12PMElimination() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        // Check if it's 12 AM (00:00 - 00:01)
+        if (hours !== 0 || minutes > 1) return; // Allow 1 minute window
+
         const today = Storage.getToday();
 
         // Only check once per day (persisted in localStorage)
