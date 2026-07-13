@@ -273,6 +273,7 @@ const Storage = (function() {
             player.currentDay = 1;
             player.eliminated = false;
             player.eliminatedDate = null;
+            player.startDate = getToday(); // Reset start date so day calculation is correct
             player.dailyLogs = {};
             saveData(data);
         }
