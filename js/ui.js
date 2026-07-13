@@ -48,17 +48,6 @@ const UI = (function() {
             resetAdminForm();
         });
 
-        // FAB
-        document.getElementById('fab')?.addEventListener('click', () => {
-            const players = Storage.getAllPlayers();
-            if (players.length === 0) {
-                showToast('Add players via Admin Panel first!');
-                showScreen('admin-screen');
-            } else {
-                showLeaderboardAndPickPlayer();
-            }
-        });
-
         // Admin login
         document.getElementById('admin-login')?.addEventListener('click', handleAdminLogin);
         document.getElementById('admin-password')?.addEventListener('keypress', (e) => {
