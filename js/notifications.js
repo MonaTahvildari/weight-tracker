@@ -18,37 +18,30 @@ const Notifications = (function() {
     }
 
     /**
-     * Check at 12 PM for players who haven't logged
+     * Check daily: eliminate players who didn't complete yesterday (6+ tasks)
      */
     function checkDaily12PMElimination() {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-
-        // Check if it's 12:00 PM (noon)
-        if (hours !== 12 || minutes > 1) return; // Allow 1 minute window
-
-        // Don't check twice on the same day
         const today = Storage.getToday();
+
+        // Only check once per day
         if (last12PMCheck === today) return;
         last12PMCheck = today;
 
         const players = Storage.getAllPlayers();
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
 
         players.forEach(player => {
             if (player.eliminated) return; // Skip already eliminated
 
-            const hasLogged = Storage.hasLoggedToday(player.id);
+            // Check if player has a log for yesterday with 6+ tasks
+            const yesterdayLog = Storage.getDailyLog(player.id, yesterdayStr);
 
-            if (!hasLogged) {
-                // Haven't logged - check if they should be eliminated
-                const log = Storage.getDailyLog(player.id, today);
-
-                if (!log) {
-                    // No tasks logged, eliminate them
-                    Storage.eliminatePlayer(player.id, player.currentDay);
-                    UI.showToast(`⚠️ ${player.name} has been ELIMINATED for not logging by 12 PM!`, 'error');
-                }
+            if (!yesterdayLog || yesterdayLog.completedCount < 6) {
+                // Yesterday they didn't complete 6+ tasks (or no log) → eliminate
+                Storage.eliminatePlayer(player.id, player.currentDay);
+                UI.showToast(`⚠️ ${player.name} has been ELIMINATED for not completing 6+ tasks yesterday!`, 'error');
             }
         });
     }
